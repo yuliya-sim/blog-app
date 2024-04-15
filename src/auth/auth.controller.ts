@@ -51,7 +51,6 @@ export class AuthController {
     return this.authService.register(userModel);
   }
 
-  @HttpCode(HttpStatus.OK)
   @Post('login')
   @ApiResponse({ status: 200, description: 'User logged in.' })
   @ApiOperation({ summary: 'Login a user' })
@@ -72,7 +71,6 @@ export class AuthController {
     };
   }
 
-  @HttpCode(HttpStatus.OK)
   @ApiResponse({ status: 200, description: 'User refreshed tokens.' })
   @ApiOperation({ summary: 'Refresh tokens' })
   @ApiBadRequestResponse({ description: 'Invalid refresh token' })
