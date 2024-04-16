@@ -2,7 +2,7 @@ import { Injectable, Logger, NotFoundException, UnprocessableEntityException } f
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BlogEntity as Blog, UserEntity as User } from './../entities';
-import { Pagination, PaginationOptionsInterface } from './../paginate';
+import { Pagination, PaginationOptionsInterface } from '../utils/paginate';
 import { SlugProvider } from './slug.provider';
 import { CreateBlogDto, updateBlogDto } from './dtos';
 import { Role } from '../user/roles/role.enum';

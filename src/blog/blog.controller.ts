@@ -19,7 +19,7 @@ import {
     Logger,
 } from '@nestjs/common';
 import { BlogEntity } from './../entities';
-import { Pagination } from './../paginate';
+import { Pagination } from '../utils/paginate';
 import { BlogService } from './blog.service';
 
 import {
@@ -66,6 +66,7 @@ export class BlogController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
     @HttpCode(HttpStatus.CREATED)
+
     @ApiOperation({ summary: 'Create blog' })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     @ApiResponse({

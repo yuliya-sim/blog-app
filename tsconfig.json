@@ -33,11 +33,8 @@
       "@auth-dto/*": [
         "src/auth/dto/*"
       ],
-      "@entities/*": [
-        "src/entities/*"
-      ],
       "@paginate/*": [
-        "src/paginate/*"
+        "src/utils/paginate/*"
       ],
       "@controllers/*": [
         "src/controllers/*"
