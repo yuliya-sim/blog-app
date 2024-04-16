@@ -1,6 +1,6 @@
 import { Entity, Column, ManyToOne } from 'typeorm';
-import { BlogEntity, PostEntity, UserEntity } from './index';
 import { BaseEntity } from './base.entity';
+import { BlogEntity, PostEntity, UserEntity } from '.';
 
 @Entity({ name: 'comments' })
 export class CommentEntity extends BaseEntity {

@@ -1,6 +1,6 @@
-import { BaseEntity } from './base.entity';
 import { Entity, Column, ManyToOne, OneToMany } from 'typeorm';
-import { UserEntity, CommentEntity, PostEntity } from './index';
+import { BaseEntity } from './base.entity';
+import { UserEntity, CommentEntity, PostEntity } from '.';
 import { Sections } from '../constants/sections';
 
 @Entity({ name: 'blogs' })

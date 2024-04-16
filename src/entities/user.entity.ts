@@ -1,18 +1,10 @@
-import { BaseEntity } from './base.entity';
 import { Entity, Column, Index, OneToMany } from 'typeorm';
-
-import { IsEmail, IsNotEmpty } from 'class-validator';
-import { BlogEntity } from './blog.entity';
-import { CommentEntity } from './comment.entity';
-import { PostEntity } from './post.entity';
-import { TokenEntity } from './token.entity';
-
+import { BaseEntity } from './base.entity';
+import { BlogEntity, CommentEntity, PostEntity, TokenEntity } from '.';
 
 @Entity({ name: 'users' })
 export class UserEntity extends BaseEntity {
   @Column()
-  @IsNotEmpty()
-  @IsEmail()
   @Index({ unique: true })
   email: string;
 
