@@ -10,6 +10,7 @@ import {
     Put,
     UseGuards,
     Request,
+    Logger,
 } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dtos';
@@ -23,6 +24,7 @@ import {
 } from '@nestjs/swagger';
 import { MessageResponse } from '@messageResponse/messageResponse.dto';
 import { JwtAuthGuard } from '../auth/guards';
+import { AuthService } from '../auth/auth.service';
 
 @ApiTags('comments')
 @ApiBadRequestResponse({ description: 'Bad Request' })
@@ -30,6 +32,8 @@ import { JwtAuthGuard } from '../auth/guards';
 @ApiUnauthorizedResponse({ description: 'Unauthorized' })
 @Controller('comment')
 export class CommentController {
+    private readonly logger = new Logger(AuthService.name);
+
     constructor(private readonly commentService: CommentService) { }
 
     @Post(':id')
@@ -46,7 +50,12 @@ export class CommentController {
         @Body() createCommentDto: CreateCommentDto,
         @Request() req,
     ): Promise<CreateCommentDto> {
-        return await this.commentService.create(id, createCommentDto, req.user.id);
+        try {
+            return await this.commentService.create(id, createCommentDto, req.user.id);
+        } catch (error) {
+            this.logger.error(error);
+            throw error;
+        }
     }
 
     @Delete(':id')
@@ -65,6 +74,11 @@ export class CommentController {
         @Param('id') id: string,
         @Body() updateCommentDto: CreateCommentDto,
     ): Promise<MessageResponse<CreateCommentDto>> {
-        return await this.commentService.update(id, updateCommentDto);
+        try {
+            return await this.commentService.update(id, updateCommentDto);
+        } catch (error) {
+            this.logger.error(error);
+            throw error;
+        }
     }
 }
