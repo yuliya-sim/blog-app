@@ -9,11 +9,10 @@ import {
     InternalServerErrorException,
     Logger,
 } from '@nestjs/common';
+import { ApiBadRequestResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { Response } from 'express';
 import { InjectConfig } from 'nestjs-config';
-
-import { ApiBadRequestResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { Cookie, Public, UserAgent } from '../../libs/shared/src/decorators';
 import { AuthService } from './auth.service';

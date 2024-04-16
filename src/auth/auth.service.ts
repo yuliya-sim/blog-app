@@ -14,7 +14,7 @@ import { TokenEntity } from '../entities/token.entity';
 import { JwtPayload } from './interfaces';
 import { LoginDto } from './dto';
 import { RegisterDto } from './dto/register.dto';
-import { Tokens } from './tokens';
+import { Token } from './tokens';
 
 const REFRESH_TOKEN = 'refreshtoken';
 
@@ -140,7 +140,7 @@ export class AuthService {
         }
     }
 
-    async generateTokens(user: UserEntity, agent: string): Promise<Tokens> {
+    async generateTokens(user: UserEntity, agent: string): Promise<Token> {
         try {
             const accessToken = this.jwtService.sign({
                 id: user.id,
@@ -184,7 +184,7 @@ export class AuthService {
         }
     }
 
-    private setRefreshTokenToCookies(tokens: Tokens, res: Response) {
+    private setRefreshTokenToCookies(tokens: Token, res: Response) {
         if (!tokens) {
             throw new UnauthorizedException();
         }
