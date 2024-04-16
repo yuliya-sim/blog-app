@@ -1,40 +1,28 @@
-import {
-  PrimaryGeneratedColumn,
-  Column,
-  UpdateDateColumn,
-  CreateDateColumn,
-} from 'typeorm';
+import { PrimaryGeneratedColumn, Column, UpdateDateColumn, CreateDateColumn } from 'typeorm';
 
 export abstract class BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'boolean', default: true, name: 'is_Active' })
-  isActive: boolean;
-
-  @Column({ type: 'boolean', default: false, name: 'is_Archived' })
-  isArchived: boolean;
-
   @CreateDateColumn({
-    type: 'timestamptz',
+    type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
-    name: 'create_Date_Time',
+    name: 'create_date_time',
   })
-  createDateTime: Date;
-
+  createdAt: Date;
 
   @UpdateDateColumn({
-    type: 'timestamptz',
+    type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
-    name: 'last_Changed_Date_Time',
+    name: 'last_changed_date_time',
   })
-  lastChangedDateTime: Date;
+  updatedAt: Date;
 
   @Column({
     type: 'varchar',
     length: 300,
     nullable: true,
-    name: 'last_Changed_By',
+    name: 'last_changed_by',
   })
   lastChangedBy: string;
 
@@ -42,7 +30,7 @@ export abstract class BaseEntity {
     type: 'varchar',
     length: 300,
     nullable: true,
-    name: 'internal_Comment',
+    name: 'internal_comment',
   })
   internalComment: string | null;
 }

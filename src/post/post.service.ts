@@ -110,7 +110,7 @@ export class PostService {
 
             const postsData = blog.posts.map((post) => ({
                 ...post,
-                createDateTime: post.createDateTime.toISOString(), // Convert Date to ISO string
+                createDateTime: post.createdAt.toISOString(),
                 comments: post.comments.map((comment) => ({
                     ...comment,
                     content: comment.content,

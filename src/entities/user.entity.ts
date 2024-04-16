@@ -19,10 +19,10 @@ export class UserEntity extends BaseEntity {
   @Column({ select: false })
   password: string;
 
-  @Column({ length: 300, nullable: true, name: 'first_Name' })
+  @Column({ length: 300, nullable: true, name: 'first_name' })
   firstName: string;
 
-  @Column({ length: 300, nullable: true, name: 'last_Name' })
+  @Column({ length: 300, nullable: true, name: 'last_name' })
   lastName: string;
 
   @Column({ length: 300, nullable: true })

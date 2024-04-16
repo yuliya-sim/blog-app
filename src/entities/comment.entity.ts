@@ -1,12 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, Column, ManyToOne } from 'typeorm';
 import { BlogEntity, PostEntity, UserEntity } from './index';
 import { BaseEntity } from './base.entity';
 
 @Entity({ name: 'comments' })
 export class CommentEntity extends BaseEntity {
-    @PrimaryGeneratedColumn()
-    id: string;
-
     @Column()
     content: string;
 
