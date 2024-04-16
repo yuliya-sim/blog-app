@@ -1,13 +1,16 @@
 import { Repository } from 'typeorm';
 import { PostEntity as Post, BlogEntity as Blog, UserEntity as User } from '../entities';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, MethodNotAllowedException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdatePostDto } from './dtos';
 import { MessageResponse } from '@messageResponse/messageResponse.dto';
 import { Role } from '../user/roles/role.enum';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class PostService {
+    private readonly logger = new Logger(AuthService.name);
+
     constructor(
         @InjectRepository(Post)
         private readonly postRepository: Repository<Post>,
@@ -16,6 +19,16 @@ export class PostService {
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
     ) { }
+
+    async getAllPosts(): Promise<Post[]> {
+        try {
+            return await this.postRepository.find();
+        } catch (error) {
+            this.logger.error('Error fetching posts:', error);
+            throw error;
+        }
+    }
+
     /**
      * Create a new post for a specific blog.
      *
@@ -24,25 +37,29 @@ export class PostService {
      * @return {Promise<Post>} The newly created post
      */
     async create(blogId: string, createPostDto: UpdatePostDto, userId: string) {
-        const blog = await this.blogRepository.findOne({ where: { id: blogId }, relations: ['author'] });
-        const user = await this.userRepository.findOne({ where: { id: userId } });
-
-        if (!blog) {
-            return { message: 'Blog not found' };
-        }
-
-        if (blog.author.id !== userId || user.role !== Role.Admin) {
-            return { message: "You cannot create a post for this blog or you don't have permission to create it" };
-        }
-
-        const newPost = this.postRepository.create({
-            ...createPostDto,
-            blog,
-            author: { id: userId },
-            lastChangedBy: userId,
-        });
-
         try {
+            const blog = await this.blogRepository.findOne({ where: { id: blogId }, relations: ['author'] });
+            const user = await this.userRepository.findOne({ where: { id: userId } });
+
+            if (!blog) {
+                this.logger.error('Blog not found');
+                return new NotFoundException('Blog not found');
+            }
+
+            if (blog.author.id !== userId || user.role !== Role.Admin) {
+                this.logger.error("You cannot create a post for this blog or you don't have permission to create it");
+                return new MethodNotAllowedException(
+                    "You cannot create a post for this blog or you don't have permission to create it",
+                );
+            }
+
+            const newPost = this.postRepository.create({
+                ...createPostDto,
+                blog,
+                author: { id: userId },
+                lastChangedBy: userId,
+            });
+
             await this.postRepository.save(newPost);
 
             return {
@@ -53,86 +70,70 @@ export class PostService {
                 },
             };
         } catch (error) {
+            this.logger.error('Error creating post:', error);
             return { message: "Post wasn't created" };
         }
     }
 
-    /**
-     * Get all posts asynchronously.
-     *
-     * @return {Promise<Post[]>} all posts
-     */
-    async getAllPosts(): Promise<Post[]> {
-        return this.postRepository.find();
-    }
-
-    /**
-     * Retrieves an array of Post objects based on the provided blogId.
-     *
-     * @param {string} blogId - The ID of the blog to retrieve posts for.
-     * @return {Promise<Post[]>} A Promise that resolves to an array of Post objects.
-     */
     async getPostsByBlogId(blogId: string): Promise<Post[]> {
-        const blog = await this.blogRepository.findOne({ where: { id: blogId } });
-        if (!blog) {
-            throw new NotFoundException(`Blog with id ${blogId} not found`);
+        try {
+            const blog = await this.blogRepository.findOne({ where: { id: blogId } });
+            if (!blog) {
+                this.logger.error(`Blog with id ${blogId} not found`);
+                throw new NotFoundException(`Blog with id ${blogId} not found`);
+            }
+            return this.postRepository.find({ where: { blog: { id: blogId } } });
+        } catch (error) {
+            this.logger.error(`Error retrieving posts for blog with id ${blogId}`);
+            throw new NotFoundException(`Error retrieving posts for blog with id ${blogId}`);
         }
-        return this.postRepository.find({ where: { blog: { id: blogId } } });
     }
-    /**
-     * Find the blog based on the slug
-     *
-     * @param {string} slugId - the unique identifier for the blog slug
-     * @return {Promise<{ title: string, posts: Post[] }>} the title and posts of the blog
-     */
 
     async getPostsBySlug(
         slugId: string,
     ): Promise<{ title: string; posts: any[]; blog_content: string; blog_id: string }> {
-        // Find the blog based on the slug
-        const blog = await this.blogRepository.findOne({
-            where: { slug: slugId },
-            relations: {
-                posts: {
-                    comments: {
-                        user: true,
+        try {
+            const blog = await this.blogRepository.findOne({
+                where: { slug: slugId },
+                relations: {
+                    posts: {
+                        comments: {
+                            user: true,
+                        },
                     },
                 },
-            },
-        });
-        if (!blog) {
-            throw new NotFoundException(`Blog with slug ${slugId} not found`);
+            });
+            if (!blog) {
+                this.logger.error(`Blog with slug ${slugId} not found`);
+                throw new NotFoundException(`Blog with slug ${slugId} not found`);
+            }
+
+            const postsData = blog.posts.map((post) => ({
+                ...post,
+                createDateTime: post.createDateTime.toISOString(), // Convert Date to ISO string
+                comments: post.comments.map((comment) => ({
+                    ...comment,
+                    content: comment.content,
+                    user: {
+                        id: comment.user.id,
+                        firstName: comment.user.firstName,
+                        lastName: comment.user.lastName,
+                    },
+                })),
+            }));
+
+            return {
+                title: blog.title,
+                posts: postsData,
+                blog_content: blog.content,
+                blog_id: blog.id,
+            };
+        } catch (error) {
+            this.logger.error(`Error retrieving posts for blog with slug ${slugId}`);
+            throw new NotFoundException(`Error retrieving posts for blog with slug ${slugId}`);
         }
-
-        const postsData = blog.posts.map((post) => ({
-            ...post,
-            createDateTime: post.createDateTime.toISOString(), // Convert Date to ISO string
-            comments: post.comments.map((comment) => ({
-                ...comment,
-                content: comment.content,
-                user: {
-                    id: comment.user.id,
-                    firstName: comment.user.firstName,
-                    lastName: comment.user.lastName,
-                },
-            })),
-        }));
-
-        return {
-            title: blog.title,
-            posts: postsData,
-            blog_content: blog.content,
-            blog_id: blog.id,
-        };
     }
-    /**
-     * Updates a post with the given ID using the provided data.
-     *
-     * @param {string} id - The ID of the post to update.
-     * @param {UpdatePostDto} updatePostDto - The data to update the post with.
-     * @return {Promise<MessageResponse<Partial<UpdatePostDto>>>} - A promise that resolves to a message response containing the updated post.
-     * @throws {NotFoundException} - If the post with the given ID is not found.
-     */
+
     async update(
         id: string,
         updatePostDto: UpdatePostDto,
@@ -157,40 +158,36 @@ export class PostService {
                 post,
             };
         } catch (err) {
+            this.logger.error(err.message, err.stack);
             throw new NotFoundException(`Post  wasn't updated`);
         }
     }
 
-    /**
-     * Asynchronously removes a post by its ID.
-     *
-     * @param {string} postId - The ID of the post to be removed
-     * @return {Promise<string>} A message indicating the result of the removal operation
-     */
     async remove(postId: string): Promise<string> {
         try {
             await this.postRepository.delete(postId);
 
             return 'Post deleted successfully';
         } catch (err) {
+            this.logger.error(err.message, err.stack);
             throw new NotFoundException(`Post  wasn't deleted`);
         }
     }
 
-    /**
-     * Retrieves the details of a post with the given ID.
-     *
-     * @param {string} postId - The ID of the post to retrieve.
-     * @return {Promise<Post>} The post object with the specified ID.
-     */
     async getPostDetails(postId: string): Promise<Post> {
-        const post = await this.postRepository.findOne({
-            where: { id: postId },
-            relations: ['comments'],
-        });
-        if (!post) {
+        try {
+            const post = await this.postRepository.findOne({
+                where: { id: postId },
+                relations: ['comments'],
+            });
+            if (!post) {
+                this.logger.error('Post not found');
+                throw new NotFoundException('Post not found');
+            }
+            return post;
+        } catch (error) {
+            this.logger.error('Post not found');
             throw new NotFoundException('Post not found');
         }
-        return post;
     }
 }

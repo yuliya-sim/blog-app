@@ -11,6 +11,7 @@ import {
     Delete,
     UseGuards,
     Request,
+    Logger,
 } from '@nestjs/common';
 import {
     ApiBadRequestResponse,
@@ -29,6 +30,7 @@ import { UpdatePostDto } from './dtos';
 
 import { JwtAuthGuard } from '../auth/guards';
 import { MessageResponse } from '@messageResponse/messageResponse.dto';
+import { AuthService } from '../auth/auth.service';
 
 @ApiTags('posts')
 @ApiBadRequestResponse({ description: 'Bad Request' })
@@ -36,7 +38,10 @@ import { MessageResponse } from '@messageResponse/messageResponse.dto';
 @ApiUnauthorizedResponse({ description: 'Unauthorized' })
 @Controller('posts')
 export class PostController {
+    private readonly logger = new Logger(AuthService.name);
+
     constructor(private readonly postService: PostService) { }
+
     @Get()
     @ApiOperation({
         summary: 'Get all posts.This route requires JWT token ',
@@ -100,8 +105,13 @@ export class PostController {
         @Body() updatePostDto: UpdatePostDto,
         @Request() req,
     ): Promise<MessageResponse<UpdatePostDto>> {
-        const updatedBlog = await this.postService.update(id, updatePostDto, req.user.id);
-        return updatedBlog;
+        try {
+            const updatedBlog = await this.postService.update(id, updatePostDto, req.user.id);
+            return updatedBlog;
+        } catch (error) {
+            this.logger.error(error.message, error.stack);
+            throw new Error(error.message);
+        }
     }
 
     @Delete(':id')
