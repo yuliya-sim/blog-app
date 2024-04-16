@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
-import { CreateScheduleDto } from '../amortization/dtos';
+import { CreateScheduleDto } from 'src/amortization/dtos/creteSchedule.dto';
 import { queryCreateProcedure, queryCreateTemporaryTable } from './constants';
 
 @Injectable()

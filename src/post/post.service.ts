@@ -3,7 +3,7 @@ import { PostEntity as Post, BlogEntity as Blog, UserEntity as User } from '../e
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdatePostDto } from './dtos';
-import { MessageResponse } from '@app/shared/dtos/messageResponse.dto';
+import { MessageResponse } from '@messageResponse/messageResponse.dto';
 import { Role } from '../user/roles/role.enum';
 
 @Injectable()

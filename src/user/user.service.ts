@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { InjectConfig, ConfigService } from 'nestjs-config';
 import * as bcrypt from 'bcrypt';
@@ -12,7 +8,7 @@ import { TokenEntity, UserEntity as User, UserEntity } from './../entities';
 import { Pagination, PaginationOptionsInterface } from './../paginate';
 import { UpdateUserDto } from './dto';
 import { RegisterDto } from '../auth/dto/index';
-import { MessageResponse } from '../../libs/shared/src/dtos/messageResponse.dto';
+import { MessageResponse } from '@messageResponse/messageResponse.dto';
 
 @Injectable()
 export class UserService {
@@ -33,9 +29,7 @@ export class UserService {
    * @param {PaginationOptionsInterface} paginationOptions - options for pagination
    * @return {Promise<Pagination<User>>} a promise that resolves to a pagination object containing users
    */
-  async getPaginatedUsers(
-    paginationOptions: PaginationOptionsInterface,
-  ): Promise<Pagination<User>> {
+  async getPaginatedUsers(paginationOptions: PaginationOptionsInterface): Promise<Pagination<User>> {
     const limit = paginationOptions.limit || 10;
     const page = paginationOptions.page || 0;
     const [users, total] = await this.userRepository.findAndCount({
@@ -71,10 +65,7 @@ export class UserService {
    * @param {UpdateUserDto} updatedUser - The updated user object containing new information
    * @return {Promise<UpdateResult>} A promise that resolves to the update result
    */
-  async update(
-    id: string,
-    updatedUser: UpdateUserDto,
-  ): Promise<MessageResponse<UpdateUserDto>> {
+  async update(id: string, updatedUser: UpdateUserDto): Promise<MessageResponse<UpdateUserDto>> {
     const user = await this.userRepository
       .createQueryBuilder('user')
       .addSelect('user.password')
@@ -150,10 +141,7 @@ export class UserService {
    * @param {{ email: string; password: string; }} param0 - object containing email and password
    * @return {Promise<User | null>} the found user, or null if not found
    */
-  async findByCredentials(
-    email: string,
-    password: string,
-  ): Promise<User | null> {
+  async findByCredentials(email: string, password: string): Promise<User | null> {
     const user = await this.userRepository
       .createQueryBuilder('user')
       .addSelect('user.password')

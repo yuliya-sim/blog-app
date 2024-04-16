@@ -32,7 +32,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CreateBlogDto, updateBlogDto } from './dtos';
-import { MessageResponse } from '../../libs/shared/src/dtos/messageResponse.dto';
+import { MessageResponse } from '@messageResponse/messageResponse.dto';
 import { AuthGuard, JwtAuthGuard } from '../auth/guards';
 
 @ApiTags('blogs')

@@ -30,8 +30,8 @@ import {
 } from '@nestjs/swagger';
 import { JwtService } from '@nestjs/jwt';
 
-import { UserEntity } from './../entities';
-import { Pagination } from './../paginate';
+import { UserEntity } from '@entities/index';
+import { Pagination } from '@paginate/index';
 import { UserService } from './user.service';
 
 import { RolesGuard } from './roles/roles.guard';
@@ -41,8 +41,8 @@ import { Role } from './roles/role.enum';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateUserDto } from './dto';
 import { RegisterDto } from '../auth/dto/index';
+import { MessageResponse } from '@messageResponse/messageResponse.dto';
 
-import { MessageResponse } from '../../libs/shared/src/dtos/messageResponse.dto';
 
 @ApiTags('users')
 @ApiUnauthorizedResponse({ description: 'Unauthorized' })

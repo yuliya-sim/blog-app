@@ -9,7 +9,6 @@
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
@@ -17,6 +16,7 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
+    "baseUrl": "./",
     "paths": {
       "@/*": [
         "src/*"
@@ -30,32 +30,32 @@
       "@guards/*": [
         "src/auth/guards/*"
       ],
+      "@auth-dto/*": [
+        "src/auth/dto/*"
+      ],
       "@entities/*": [
         "src/entities/*"
+      ],
+      "@paginate/*": [
+        "src/paginate/*"
       ],
       "@controllers/*": [
         "src/controllers/*"
       ],
+      "@app/interfaces/*": [
+        "src/auth/interfaces/*"
+      ],
       "@roles/*": [
         "src/roles/*"
       ],
-      "@user/dto/*": [
-        "../user/dto/*"
-      ],
-      "@app/shared": [
-        "libs/shared/src"
-      ],
-      "@app/shared/*": [
+      "@shared/*": [
         "libs/shared/src/*"
       ],
-      "@app/amortization": [
-        "src/amortization/src"
+      "@messageResponse/*": [
+        "libs/shared/src/dtos/*"
       ],
-      "@app/amortization/*": [
-        "src/amortization/src/*"
-      ],
-      "@f/*": [
-        "libs/shared/src/*"
+      "@shared-decorators/*": [
+        "libs/shared/src/decorators/*"
       ]
     }
   }

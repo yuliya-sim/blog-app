@@ -5,7 +5,6 @@ import { BlogEntity as Blog, UserEntity as User } from './../entities';
 import { Pagination, PaginationOptionsInterface } from './../paginate';
 import { SlugProvider } from './slug.provider';
 import { CreateBlogDto, updateBlogDto } from './dtos';
-import { MessageResponse } from '../../libs/shared/src/dtos/messageResponse.dto';
 import { Role } from '../user/roles/role.enum';
 
 @Injectable()

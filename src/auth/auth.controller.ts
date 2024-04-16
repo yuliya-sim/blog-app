@@ -2,14 +2,13 @@ import {
   Controller,
   Post,
   Body,
-  ValidationPipe,
   HttpCode,
   HttpStatus,
   Get,
   BadRequestException,
   UnauthorizedException,
   Res,
-  UseGuards,
+
 } from '@nestjs/common';
 
 import { Response } from 'express';
@@ -27,7 +26,7 @@ import { AuthService } from './auth.service';
 import { LoginDto, RegisterDto } from './dto';
 import { Tokens } from './tokens';
 import { TokenEntity } from '../entities';
-import { AuthGuard } from './guards';
+
 const REFRESH_TOKEN = 'refreshtoken';
 
 @Public()

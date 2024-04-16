@@ -27,8 +27,8 @@ import { PostEntity } from '../entities';
 import { PostService } from './post.service';
 import { UpdatePostDto } from './dtos';
 
-import { MessageResponse } from '@app/shared/dtos/messageResponse.dto';
 import { JwtAuthGuard } from '../auth/guards';
+import { MessageResponse } from '@messageResponse/messageResponse.dto';
 
 @ApiTags('posts')
 @ApiBadRequestResponse({ description: 'Bad Request' })

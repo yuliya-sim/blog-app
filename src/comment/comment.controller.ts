@@ -21,7 +21,7 @@ import {
     ApiOperation,
     ApiResponse,
 } from '@nestjs/swagger';
-import { MessageResponse } from '@app/shared/dtos/messageResponse.dto';
+import { MessageResponse } from '@messageResponse/messageResponse.dto';
 import { JwtAuthGuard } from '../auth/guards';
 
 @ApiTags('comments')
