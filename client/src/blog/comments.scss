@@ -1,0 +1,16 @@
+.drawer {
+    width: 300px;
+    flex-shrink: 0;
+}
+
+.drawerPaper {
+    width: 500px;
+}
+.author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.authors-comments {
+    padding: 2rem;
+}
