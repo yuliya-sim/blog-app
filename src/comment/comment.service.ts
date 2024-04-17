@@ -1,4 +1,10 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+    BadRequestException,
+    Injectable,
+    Logger,
+    NotFoundException,
+    UnprocessableEntityException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -29,8 +35,7 @@ export class CommentService {
             }
             return { post, blogId: post.blog ? post.blog.id : null };
         } catch (err) {
-            this.logger.error(err);
-            throw err;
+            throw new UnprocessableEntityException();
         }
     }
     async create(postId: string, createCommentDto: CreateCommentDto, userId: string): Promise<CommentEntity> {
@@ -51,7 +56,7 @@ export class CommentService {
             return savedComment;
         } catch (err) {
             this.logger.error(err);
-            throw err;
+            throw new BadRequestException();
         }
     }
 
@@ -68,7 +73,7 @@ export class CommentService {
             return 'Comment deleted successfully';
         } catch (err) {
             this.logger.error(err);
-            throw err;
+            throw new BadRequestException();
         }
     }
 
@@ -88,7 +93,7 @@ export class CommentService {
             };
         } catch (err) {
             this.logger.error(err);
-            throw new NotFoundException(`Comment  wasn't updated`);
+            throw new BadRequestException();
         }
     }
 }

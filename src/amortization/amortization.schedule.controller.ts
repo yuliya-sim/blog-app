@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post } from '@nestjs/common';
 import { AmortizationScheduleService } from './amortization-schedule.service';
 import { ApiBadRequestResponse, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateScheduleDto } from './dtos';
@@ -14,7 +14,11 @@ export class AmortizationScheduleController {
         summary: 'Generate amortization schedule',
     })
     async generateAmortizationSchedule(): Promise<void> {
-        return await this.amortizationService.generateAmortizationSchedule();
+        try {
+            return await this.amortizationService.generateAmortizationSchedule();
+        } catch (err) {
+            throw new BadRequestException();
+        }
     }
     @Post('call-amortization-schedule')
     @ApiOperation({
@@ -22,6 +26,10 @@ export class AmortizationScheduleController {
     })
     @ApiBody({ type: CreateScheduleDto })
     async callAmortizationSchedule(@Body() createScheduleDto: CreateScheduleDto): Promise<CreateScheduleDto> {
-        return await this.amortizationService.callAmortizationSchedule(createScheduleDto);
+        try {
+            return await this.amortizationService.callAmortizationSchedule(createScheduleDto);
+        } catch (err) {
+            throw new BadRequestException();
+        }
     }
 }

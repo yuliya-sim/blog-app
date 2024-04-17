@@ -1,4 +1,10 @@
-import { Injectable, Logger, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import {
+    BadRequestException,
+    Injectable,
+    Logger,
+    NotFoundException,
+    UnprocessableEntityException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BlogEntity as Blog, UserEntity as User } from './../entities';
@@ -48,14 +54,17 @@ export class BlogService {
     }
 
     async create(dto: CreateBlogDto, userId: string): Promise<Blog> {
-        // Ensure the slug is unique
-        const blog = await this.ensureUniqueSlug(dto);
-        if (!blog) {
-            throw new UnprocessableEntityException('Not unique');
-        }
+        try {
+            const blog = await this.ensureUniqueSlug(dto);
+            if (!blog) {
+                throw new UnprocessableEntityException('Not unique');
+            }
 
-        // Save the blog to the database
-        return await this.blogRepository.save(this.blogRepository.create({ ...blog, author: { id: userId } }));
+            return await this.blogRepository.save(this.blogRepository.create({ ...blog, author: { id: userId } }));
+        } catch (error) {
+            this.logger.error('Error in create service', error);
+            throw new BadRequestException('Invalid input data');
+        }
     }
 
     async findBySlug(slug: string): Promise<Blog | null> {
@@ -114,8 +123,17 @@ export class BlogService {
         }
     }
 
-    async findById(id: string): Promise<Blog | null> {
-        return await this.blogRepository.findOne({ where: { id } });
+    async findById(id: string): Promise<Blog> {
+        try {
+            const blog = await this.blogRepository.findOne({ where: { id } });
+            if (!blog) {
+                throw new NotFoundException(`Blog with id ${id} not found`);
+            }
+            return blog;
+        } catch (error) {
+            this.logger.error('Error in findById service', error);
+            throw new UnprocessableEntityException();
+        }
     }
 
     async update(id: string, updatedBlog: updateBlogDto, userId: string): Promise<any> {
@@ -139,7 +157,8 @@ export class BlogService {
                 blog,
             };
         } catch (err) {
-            throw new NotFoundException(`Blog  wasn't updated`);
+            this.logger.error(err.message, err.stack);
+            throw new BadRequestException('Invalid input data');
         }
     }
 

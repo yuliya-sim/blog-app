@@ -15,6 +15,7 @@ import {
   HttpCode,
   BadRequestException,
   ParseUUIDPipe,
+  Logger,
 } from '@nestjs/common';
 
 import {
@@ -30,8 +31,8 @@ import {
 } from '@nestjs/swagger';
 import { JwtService } from '@nestjs/jwt';
 
-import { UserEntity } from '@entities/index';
-import { Pagination } from '@paginate/index';
+import { UserEntity } from '../entities';
+import { Pagination } from '@/utils/paginate/index';
 import { UserService } from './user.service';
 
 import { RolesGuard } from './roles/roles.guard';
@@ -42,12 +43,13 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateUserDto } from './dto';
 import { RegisterDto } from '../auth/dto/index';
 import { MessageResponse } from '@messageResponse/messageResponse.dto';
-
+import { AuthService } from '../auth/auth.service';
 
 @ApiTags('users')
 @ApiUnauthorizedResponse({ description: 'Unauthorized' })
 @Controller('users')
 export class UserController {
+  private readonly logger = new Logger(AuthService.name);
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
@@ -70,7 +72,12 @@ export class UserController {
     @Query('page', new DefaultValuePipe(0), ParseIntPipe) page: number,
   ): Promise<Pagination<UserEntity>> {
     const paginationOptions = { limit, page };
-    return await this.userService.getPaginatedUsers(paginationOptions);
+    try {
+      return await this.userService.getPaginatedUsers(paginationOptions);
+    } catch (error) {
+      this.logger.error(error.message, error.stack);
+      throw new BadRequestException();
+    }
   }
 
   @Post()
@@ -79,12 +86,17 @@ export class UserController {
   @ApiResponse({ status: 201, description: 'User created successfully' })
   @ApiBadRequestResponse({ description: 'Invalid input data' })
   async register(@Body() createUserDto: RegisterDto): Promise<string> {
-    const existingUser = await this.userService.findByEmail(createUserDto.email);
-    if (existingUser) {
-      throw new BadRequestException('User already exists');
+    try {
+      const existingUser = await this.userService.findByEmail(createUserDto.email);
+      if (existingUser) {
+        throw new BadRequestException('User already exists');
+      }
+      const createdUser = await this.userService.create(createUserDto);
+      return this.jwtService.sign({ id: createdUser.id });
+    } catch (error) {
+      this.logger.error(error.message, error.stack);
+      throw new BadRequestException();
     }
-    const createdUser = await this.userService.create(createUserDto);
-    return this.jwtService.sign({ id: createdUser.id });
   }
 
   @Get(':id')
@@ -95,11 +107,16 @@ export class UserController {
   @ApiResponse({ status: 200, description: 'User found' })
   @ApiNotFoundResponse({ description: 'User not found' })
   async showUserById(@Param('id', ParseUUIDPipe) userId: string): Promise<UserEntity> {
-    const user = await this.userService.findById(userId);
-    if (!user) {
-      throw new NotFoundException();
+    try {
+      const user = await this.userService.findById(userId);
+      if (!user) {
+        throw new NotFoundException();
+      }
+      return user;
+    } catch (error) {
+      this.logger.error(error.message, error.stack);
+      throw new BadRequestException();
     }
-    return user;
   }
 
   @Put(':id')
@@ -115,8 +132,13 @@ export class UserController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<MessageResponse<UpdateUserDto>> {
-    const updatedUser = await this.userService.update(id, updateUserDto);
-    return updatedUser;
+    try {
+      const updatedUser = await this.userService.update(id, updateUserDto);
+      return updatedUser;
+    } catch (error) {
+      this.logger.error(error.message, error.stack);
+      throw new BadRequestException();
+    }
   }
 
   @Delete(':id')
@@ -138,11 +160,16 @@ export class UserController {
   @ApiResponse({ status: 200, description: 'User found' })
   @ApiNotFoundResponse({ description: 'User not found' })
   async showUserByEmail(@Param('email') email: string): Promise<UserEntity> {
-    const user = await this.userService.findByEmail(email);
+    try {
+      const user = await this.userService.findByEmail(email);
 
-    if (!user) {
-      throw new NotFoundException();
+      if (!user) {
+        throw new NotFoundException();
+      }
+      return user;
+    } catch (error) {
+      this.logger.error(error.message, error.stack);
+      throw new BadRequestException();
     }
-    return user;
   }
 }

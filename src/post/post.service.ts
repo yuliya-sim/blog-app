@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm';
 import { PostEntity as Post, BlogEntity as Blog, UserEntity as User } from '../entities';
-import { Injectable, Logger, MethodNotAllowedException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, MethodNotAllowedException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdatePostDto } from './dtos';
 import { MessageResponse } from '@messageResponse/messageResponse.dto';
@@ -25,7 +25,7 @@ export class PostService {
             return await this.postRepository.find();
         } catch (error) {
             this.logger.error('Error fetching posts:', error);
-            throw error;
+            throw new NotFoundException('Error fetching posts');
         }
     }
 
@@ -71,7 +71,7 @@ export class PostService {
             };
         } catch (error) {
             this.logger.error('Error creating post:', error);
-            return { message: "Post wasn't created" };
+            throw new BadRequestException();
         }
     }
 
@@ -85,7 +85,7 @@ export class PostService {
             return this.postRepository.find({ where: { blog: { id: blogId } } });
         } catch (error) {
             this.logger.error(`Error retrieving posts for blog with id ${blogId}`);
-            throw new NotFoundException(`Error retrieving posts for blog with id ${blogId}`);
+            throw new BadRequestException();
         }
     }
 
@@ -130,7 +130,7 @@ export class PostService {
             };
         } catch (error) {
             this.logger.error(`Error retrieving posts for blog with slug ${slugId}`);
-            throw new NotFoundException(`Error retrieving posts for blog with slug ${slugId}`);
+            throw new BadRequestException();
         }
     }
 
@@ -159,7 +159,7 @@ export class PostService {
             };
         } catch (err) {
             this.logger.error(err.message, err.stack);
-            throw new NotFoundException(`Post  wasn't updated`);
+            throw new BadRequestException();
         }
     }
 
@@ -170,7 +170,7 @@ export class PostService {
             return 'Post deleted successfully';
         } catch (err) {
             this.logger.error(err.message, err.stack);
-            throw new NotFoundException(`Post  wasn't deleted`);
+            throw new BadRequestException();
         }
     }
 
@@ -187,7 +187,7 @@ export class PostService {
             return post;
         } catch (error) {
             this.logger.error('Post not found');
-            throw new NotFoundException('Post not found');
+            throw new BadRequestException();
         }
     }
 }

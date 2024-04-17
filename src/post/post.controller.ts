@@ -12,6 +12,7 @@ import {
     UseGuards,
     Request,
     Logger,
+    BadRequestException,
 } from '@nestjs/common';
 import {
     ApiBadRequestResponse,
@@ -110,7 +111,7 @@ export class PostController {
             return updatedBlog;
         } catch (error) {
             this.logger.error(error.message, error.stack);
-            throw new Error(error.message);
+            throw new BadRequestException();
         }
     }
 

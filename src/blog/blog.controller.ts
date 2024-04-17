@@ -17,6 +17,7 @@ import {
     UseGuards,
     Request,
     Logger,
+    BadRequestException,
 } from '@nestjs/common';
 import { BlogEntity } from './../entities';
 import { Pagination } from '../utils/paginate';
@@ -102,7 +103,7 @@ export class BlogController {
             return blog;
         } catch (error) {
             this.logger.error(error.message, error.stack);
-            throw new NotFoundException();
+            throw new BadRequestException();
         }
     }
 
@@ -122,7 +123,7 @@ export class BlogController {
             return updatedBlog;
         } catch (error) {
             this.logger.error(error.message, error.stack);
-            throw new Error(error.message);
+            throw new BadRequestException();
         }
     }
 

@@ -5,7 +5,7 @@ export default {
   username: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DATABASE,
-  entities: [process.env.DB_ENTITIES],
+  entities: ['src/entities/*.entity.ts'],
   synchronize: process.env.DB_SYNCRONIZE === 'true',
   logging: process.env.DB_LOGGING === 'true',
   migrationsRun: process.env.DB_MIGRATIONS_RUN === 'true',

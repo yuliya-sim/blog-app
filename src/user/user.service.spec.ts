@@ -3,7 +3,7 @@ import { UserService, UserModule } from './';
 import { ConfigModule, ConfigService } from 'nestjs-config';
 import * as path from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Pagination } from '../paginate';
+import { Pagination } from '../utils/paginate';
 import { INestApplication } from '@nestjs/common';
 import { UserEntity } from '../entities';
 import { UpdateResult, DeleteResult } from 'typeorm';

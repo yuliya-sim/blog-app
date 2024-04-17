@@ -11,6 +11,7 @@ import {
     UseGuards,
     Request,
     Logger,
+    BadRequestException,
 } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dtos';
@@ -54,7 +55,7 @@ export class CommentController {
             return await this.commentService.create(id, createCommentDto, req.user.id);
         } catch (error) {
             this.logger.error(error);
-            throw error;
+            throw new BadRequestException()
         }
     }
 
@@ -78,7 +79,7 @@ export class CommentController {
             return await this.commentService.update(id, updateCommentDto);
         } catch (error) {
             this.logger.error(error);
-            throw error;
+            throw new BadRequestException();
         }
     }
 }
