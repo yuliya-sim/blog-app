@@ -56,7 +56,7 @@ export class AuthService {
         }
     }
 
-    async login({ email, password }: LoginDto, agent: string, res: Response): Promise<any> {
+    async login({ email, password }: LoginDto, agent: string, res: Response): Promise<void> {
         try {
             const foundUser = await this.userService.findByCredentials(email, password);
 
@@ -75,7 +75,7 @@ export class AuthService {
         }
     }
 
-    async getRefreshToken(userId: string, agent: string): Promise<any> {
+    async getRefreshToken(userId: string, agent: string): Promise<TokenEntity | void> {
         try {
             const token = await this.tokenRepository
                 .createQueryBuilder('token')
@@ -104,7 +104,7 @@ export class AuthService {
         }
     }
 
-    async refreshTokens(refreshToken: string, agent: string, res: Response): Promise<any> {
+    async refreshTokens(refreshToken: string, agent: string, res: Response): Promise<void> {
         try {
             if (!refreshToken) {
                 throw new UnauthorizedException();
@@ -160,7 +160,7 @@ export class AuthService {
         }
     }
 
-    async deleteRefreshToken(refreshToken: TokenEntity, res: any) {
+    async deleteRefreshToken(refreshToken: TokenEntity, res: Response) {
         try {
             if (!refreshToken) {
                 res.sendStatus(HttpStatus.OK);

@@ -27,7 +27,7 @@ export class BlogService {
             const [blogs, total] = await this.blogRepository.findAndCount({
                 take: limit,
                 skip: page,
-                relations: ['author'], // Assuming 'author' is the relationship field name in the BlogEntity
+                relations: ['author'],
             });
             const blogsWithoutAuthor = blogs.map((blog) => {
                 const { author, ...blogWithoutAuthor } = blog;
@@ -61,7 +61,7 @@ export class BlogService {
         }
     }
 
-    async findBySlug(slug: string): Promise<Blog | null> {
+    async findBySlug(slug: string): Promise<Blog> {
         try {
             return await this.blogRepository.findOne({
                 where: {

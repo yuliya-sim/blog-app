@@ -57,7 +57,7 @@ export class UserService {
     }
   }
 
-  async update(id: string, updatedUser: UpdateUserDto): Promise<{ user: UserEntity }> {
+  async update(id: string, updatedUser: UpdateUserDto): Promise<UserEntity> {
     try {
       const user = await this.userRepository
         .createQueryBuilder('user')
@@ -83,9 +83,7 @@ export class UserService {
         select: ['id', 'firstName', 'lastName', 'role'],
       });
 
-      return {
-        user: updatedUserEntity,
-      };
+      return updatedUserEntity;
     } catch (err) {
       this.logger.error('Error while updating user ', err);
       throw new Error();

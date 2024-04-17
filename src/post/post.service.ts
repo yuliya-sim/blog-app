@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UpdatePostDto } from './dtos';
 import { Role } from '../user/roles/role.enum';
 import { AuthService } from '../auth/auth.service';
+import { PostsBySlugResponse } from './post.interface';
 
 @Injectable()
 export class PostService {
@@ -84,9 +85,7 @@ export class PostService {
         }
     }
 
-    async getPostsBySlug(
-        slugId: string,
-    ): Promise<{ title: string; posts: any[]; blog_content: string; blog_id: string }> {
+    async getPostsBySlug(slugId: string): Promise<PostsBySlugResponse> {
         try {
             const blog = await this.blogRepository.findOne({
                 where: { slug: slugId },

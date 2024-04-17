@@ -35,7 +35,7 @@ export class AmortizationScheduleService {
             throw new Error();
         }
     }
-    async generateAmortizationSchedule(): Promise<any> {
+    async generateAmortizationSchedule(): Promise<void> {
         try {
             await this.entityManager.query(`
             ${queryCreateProcedure}    

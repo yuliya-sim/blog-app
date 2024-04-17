@@ -36,11 +36,7 @@ export class AuthController {
     @ApiResponse({ status: 200, description: 'User logged in.' })
     @ApiOperation({ summary: 'Login a user' })
     @ApiBadRequestResponse({ description: 'Invalid input data' })
-    async login(
-        @Body() dto: LoginDto,
-        @Res() res: Response,
-        @UserAgent() agent: string,
-    ): Promise<{ accessToken: string }> {
+    async login(@Body() dto: LoginDto, @Res() res: Response, @UserAgent() agent: string): Promise<void> {
         try {
             return await this.authService.login(dto, agent, res);
         } catch (error) {

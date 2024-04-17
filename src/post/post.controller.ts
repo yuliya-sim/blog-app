@@ -31,6 +31,7 @@ import { UpdatePostDto } from './dtos';
 
 import { JwtAuthGuard } from '../auth/guards';
 import { AuthService } from '../auth/auth.service';
+import { PostsBySlugResponse } from './post.interface';
 
 @ApiTags('posts')
 @ApiBadRequestResponse({ description: 'Bad Request' })
@@ -90,7 +91,7 @@ export class PostController {
     @ApiNotFoundResponse({ description: 'Post not found' })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     @ApiBadRequestResponse({ description: 'Bad Request.' })
-    async getPostsBySlug(@Param('slug') slug: string): Promise<{ title: string; posts: PostEntity[] }> {
+    async getPostsBySlug(@Param('slug') slug: string): Promise<PostsBySlugResponse> {
         return this.postService.getPostsBySlug(slug);
     }
 

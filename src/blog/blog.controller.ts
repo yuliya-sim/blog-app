@@ -74,7 +74,7 @@ export class BlogController {
         description: 'The blog has been successfully created',
     })
     @ApiBadRequestResponse({ description: 'Bad Request' })
-    async create(@Body() body: CreateBlogDto, @Request() req): Promise<any> {
+    async create(@Body() body: CreateBlogDto, @Request() req): Promise<BlogEntity> {
         try {
             const exists = await this.blogService.findBySlug(body.title);
 
