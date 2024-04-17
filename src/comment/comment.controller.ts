@@ -11,7 +11,6 @@ import {
     UseGuards,
     Request,
     Logger,
-    BadRequestException,
 } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dtos';
@@ -23,7 +22,6 @@ import {
     ApiOperation,
     ApiResponse,
 } from '@nestjs/swagger';
-import { MessageResponse } from '@messageResponse/messageResponse.dto';
 import { JwtAuthGuard } from '../auth/guards';
 import { AuthService } from '../auth/auth.service';
 
@@ -54,8 +52,8 @@ export class CommentController {
         try {
             return await this.commentService.create(id, createCommentDto, req.user.id);
         } catch (error) {
-            this.logger.error(error);
-            throw new BadRequestException()
+            this.logger.error(' Error in create comment', error);
+            throw new Error()
         }
     }
 
@@ -74,12 +72,12 @@ export class CommentController {
     async update(
         @Param('id') id: string,
         @Body() updateCommentDto: CreateCommentDto,
-    ): Promise<MessageResponse<CreateCommentDto>> {
+    ): Promise<Partial<CreateCommentDto>> {
         try {
             return await this.commentService.update(id, updateCommentDto);
         } catch (error) {
-            this.logger.error(error);
-            throw new BadRequestException();
+            this.logger.error(' Error in update comment', error);
+            throw new Error();
         }
     }
 }

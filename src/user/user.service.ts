@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { InjectConfig, ConfigService } from 'nestjs-config';
 import * as bcrypt from 'bcrypt';
@@ -8,7 +8,6 @@ import { TokenEntity, UserEntity as User, UserEntity } from '../entities';
 import { Pagination, PaginationOptionsInterface } from '../utils/paginate';
 import { UpdateUserDto } from './dto';
 import { RegisterDto } from '../auth/dto/index';
-import { MessageResponse } from '@messageResponse/messageResponse.dto';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable()
@@ -38,8 +37,8 @@ export class UserService {
         total,
       });
     } catch (error) {
-      this.logger.error(error.message, error.stack);
-      throw new BadRequestException();
+      this.logger.error('Error while fetching users ', error);
+      throw new Error();
     }
   }
 
@@ -53,12 +52,12 @@ export class UserService {
       const createdUser = await this.userRepository.save(user);
       return createdUser;
     } catch (error) {
-      this.logger.error(error.message, error.stack);
-      throw new BadRequestException();
+      this.logger.error(' Error while creating user ', error);
+      throw new Error();
     }
   }
 
-  async update(id: string, updatedUser: UpdateUserDto): Promise<MessageResponse<UpdateUserDto>> {
+  async update(id: string, updatedUser: UpdateUserDto): Promise<{ user: UserEntity }> {
     try {
       const user = await this.userRepository
         .createQueryBuilder('user')
@@ -85,12 +84,11 @@ export class UserService {
       });
 
       return {
-        message: 'User updated successfully',
         user: updatedUserEntity,
       };
     } catch (err) {
-      this.logger.error(err.message, err.stack);
-      throw new BadRequestException();
+      this.logger.error('Error while updating user ', err);
+      throw new Error();
     }
   }
 
@@ -103,8 +101,8 @@ export class UserService {
         select: ['id', 'firstName', 'lastName', 'role'],
       });
     } catch (error) {
-      this.logger.error(error.message, error.stack);
-      throw new BadRequestException();
+      this.logger.error('Error while finding by email user ', error);
+      throw new Error();
     }
   }
 
@@ -112,8 +110,8 @@ export class UserService {
     try {
       return await this.userRepository.findOne({ where: { id: userId } });
     } catch (error) {
-      this.logger.error(error.message, error.stack);
-      throw new BadRequestException();
+      this.logger.error('Error while finding user ', error);
+      throw new Error();
     }
   }
 
@@ -127,8 +125,8 @@ export class UserService {
       }
       return tokenEntity.user;
     } catch (error) {
-      this.logger.error(error.message, error.stack);
-      throw new BadRequestException();
+      this.logger.error('Error while fetching user ', error);
+      throw new Error();
     }
   }
 
@@ -136,8 +134,8 @@ export class UserService {
     try {
       return await bcrypt.hash(password, this.saltRounds);
     } catch (error) {
-      this.logger.error(error.message, error.stack);
-      throw new BadRequestException();
+      this.logger.error('Error while hashing password ', error);
+      throw new Error();
     }
   }
 
@@ -145,8 +143,8 @@ export class UserService {
     try {
       return await bcrypt.compare(password, hash);
     } catch (error) {
-      this.logger.error(error.message, error.stack);
-      throw new BadRequestException();
+      this.logger.error('Error while comparing password ', error);
+      throw new Error();
     }
   }
 
@@ -170,8 +168,8 @@ export class UserService {
 
       return user;
     } catch (error) {
-      this.logger.error(error.message, error.stack);
-      throw new BadRequestException();
+      this.logger.error('Error while finding user ', error);
+      throw new Error();
     }
   }
 
@@ -181,8 +179,8 @@ export class UserService {
 
       return 'User deleted successfully';
     } catch (err) {
-      this.logger.error(err.message, err.stack);
-      throw new NotFoundException(`User  wasn't deleted`);
+      this.logger.error('Error in remove service', err);
+      throw new Error();
     }
   }
 }

@@ -1,16 +1,9 @@
-import {
-    BadRequestException,
-    Injectable,
-    Logger,
-    NotFoundException,
-    UnprocessableEntityException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { CommentEntity, PostEntity } from '../entities';
 import { CreateCommentDto } from './dtos';
-import { MessageResponse } from '@messageResponse/messageResponse.dto';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable()
@@ -35,7 +28,8 @@ export class CommentService {
             }
             return { post, blogId: post.blog ? post.blog.id : null };
         } catch (err) {
-            throw new UnprocessableEntityException();
+            this.logger.error('Error in findPostById ', err);
+            throw new Error();
         }
     }
     async create(postId: string, createCommentDto: CreateCommentDto, userId: string): Promise<CommentEntity> {
@@ -55,8 +49,8 @@ export class CommentService {
 
             return savedComment;
         } catch (err) {
-            this.logger.error(err);
-            throw new BadRequestException();
+            this.logger.error(' Error in create comment', err);
+            throw new Error();
         }
     }
 
@@ -72,12 +66,12 @@ export class CommentService {
 
             return 'Comment deleted successfully';
         } catch (err) {
-            this.logger.error(err);
-            throw new BadRequestException();
+            this.logger.error(' Error in remove comment', err);
+            throw new Error();
         }
     }
 
-    async update(id: string, updateCommentDto: CreateCommentDto): Promise<MessageResponse<CreateCommentDto>> {
+    async update(id: string, updateCommentDto: CreateCommentDto): Promise<Partial<CreateCommentDto>> {
         try {
             const comment = await this.commentRepository.findOne({
                 where: { id },
@@ -87,13 +81,10 @@ export class CommentService {
             }
             await this.commentRepository.update(id, updateCommentDto);
 
-            return {
-                message: 'Comment updated successfully',
-                comment,
-            };
+            return comment;
         } catch (err) {
-            this.logger.error(err);
-            throw new BadRequestException();
+            this.logger.error('Error in update comment', err);
+            throw new Error();
         }
     }
 }

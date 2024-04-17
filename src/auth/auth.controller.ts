@@ -1,14 +1,4 @@
-import {
-    Controller,
-    Post,
-    Body,
-    HttpCode,
-    HttpStatus,
-    Get,
-    Res,
-    InternalServerErrorException,
-    Logger,
-} from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, Get, Res, Logger } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { Response } from 'express';
@@ -54,8 +44,8 @@ export class AuthController {
         try {
             return await this.authService.login(dto, agent, res);
         } catch (error) {
-            this.logger.error(`Failed to login user. Error: ${error.message}`, error.stack);
-            throw error;
+            this.logger.error('Failed to login user.', error);
+            throw new Error();
         }
     }
 
@@ -71,8 +61,8 @@ export class AuthController {
         try {
             await this.authService.refreshTokens(refreshToken.token, agent, res);
         } catch (error) {
-            this.logger.error(`Failed to refresh tokens. Error: ${error.message}`, error.stack);
-            throw new InternalServerErrorException();
+            this.logger.error('Failed to refresh tokens', error);
+            throw new Error();
         }
     }
 
@@ -84,8 +74,8 @@ export class AuthController {
         try {
             await this.authService.deleteRefreshToken(refreshToken, res);
         } catch (error) {
-            this.logger.error(`Failed to logout user. Error: ${error.message}`, error.stack);
-            throw new InternalServerErrorException();
+            this.logger.error('Failed to logout user', error);
+            throw new Error();
         }
     }
 }

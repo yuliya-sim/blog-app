@@ -30,7 +30,6 @@ import { PostService } from './post.service';
 import { UpdatePostDto } from './dtos';
 
 import { JwtAuthGuard } from '../auth/guards';
-import { MessageResponse } from '@messageResponse/messageResponse.dto';
 import { AuthService } from '../auth/auth.service';
 
 @ApiTags('posts')
@@ -105,13 +104,13 @@ export class PostController {
         @Param('id', ParseUUIDPipe) id: string,
         @Body() updatePostDto: UpdatePostDto,
         @Request() req,
-    ): Promise<MessageResponse<UpdatePostDto>> {
+    ): Promise<Partial<UpdatePostDto>> {
         try {
             const updatedBlog = await this.postService.update(id, updatePostDto, req.user.id);
             return updatedBlog;
         } catch (error) {
-            this.logger.error(error.message, error.stack);
-            throw new BadRequestException();
+            this.logger.error(' Error in update post', error);
+            throw new Error();
         }
     }
 

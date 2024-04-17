@@ -1,10 +1,4 @@
-import {
-    BadRequestException,
-    Injectable,
-    Logger,
-    NotFoundException,
-    UnprocessableEntityException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BlogEntity as Blog, UserEntity as User } from './../entities';
@@ -49,7 +43,7 @@ export class BlogService {
             });
         } catch (error) {
             this.logger.error('Error in getPaginatedBlogs service', error);
-            throw new UnprocessableEntityException();
+            throw new Error();
         }
     }
 
@@ -63,7 +57,7 @@ export class BlogService {
             return await this.blogRepository.save(this.blogRepository.create({ ...blog, author: { id: userId } }));
         } catch (error) {
             this.logger.error('Error in create service', error);
-            throw new BadRequestException('Invalid input data');
+            throw new Error();
         }
     }
 
@@ -76,7 +70,7 @@ export class BlogService {
             });
         } catch (error) {
             this.logger.error('Error in findBySlug service', error);
-            throw new UnprocessableEntityException();
+            throw new Error();
         }
     }
 
@@ -96,7 +90,7 @@ export class BlogService {
             }
         } catch (error) {
             this.logger.error('Error in ensureUniqueSlug service', error);
-            throw new UnprocessableEntityException();
+            throw new Error();
         }
     }
 
@@ -119,7 +113,7 @@ export class BlogService {
                 .getMany();
         } catch (error) {
             this.logger.error('Error in findSlugs service', error);
-            throw new UnprocessableEntityException();
+            throw new Error();
         }
     }
 
@@ -132,11 +126,11 @@ export class BlogService {
             return blog;
         } catch (error) {
             this.logger.error('Error in findById service', error);
-            throw new UnprocessableEntityException();
+            throw new Error();
         }
     }
 
-    async update(id: string, updatedBlog: updateBlogDto, userId: string): Promise<any> {
+    async update(id: string, updatedBlog: updateBlogDto, userId: string): Promise<Partial<updateBlogDto>> {
         try {
             const { title, content } = updatedBlog;
             const slug = await this.slugProvider.slugify(title);
@@ -152,13 +146,10 @@ export class BlogService {
                 where: { id },
                 select: ['id', 'title', 'content'],
             });
-            return {
-                message: 'Blog updated successfully',
-                blog,
-            };
+            return blog;
         } catch (err) {
-            this.logger.error(err.message, err.stack);
-            throw new BadRequestException('Invalid input data');
+            this.logger.error('Error in update service', err);
+            throw new Error();
         }
     }
 
@@ -179,7 +170,8 @@ export class BlogService {
 
             return 'Blog deleted successfully';
         } catch (err) {
-            throw new NotFoundException(`Blog  wasn't deleted`);
+            this.logger.error('Error in remove service', err);
+            throw new Error();
         }
     }
 }

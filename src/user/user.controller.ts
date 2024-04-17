@@ -42,7 +42,6 @@ import { Role } from './roles/role.enum';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateUserDto } from './dto';
 import { RegisterDto } from '../auth/dto/index';
-import { MessageResponse } from '@messageResponse/messageResponse.dto';
 import { AuthService } from '../auth/auth.service';
 
 @ApiTags('users')
@@ -75,8 +74,8 @@ export class UserController {
     try {
       return await this.userService.getPaginatedUsers(paginationOptions);
     } catch (error) {
-      this.logger.error(error.message, error.stack);
-      throw new BadRequestException();
+      this.logger.error('Failed to get users', error);
+      throw new Error();
     }
   }
 
@@ -94,8 +93,8 @@ export class UserController {
       const createdUser = await this.userService.create(createUserDto);
       return this.jwtService.sign({ id: createdUser.id });
     } catch (error) {
-      this.logger.error(error.message, error.stack);
-      throw new BadRequestException();
+      this.logger.error('Failed to create user', error);
+      throw new Error();
     }
   }
 
@@ -114,8 +113,8 @@ export class UserController {
       }
       return user;
     } catch (error) {
-      this.logger.error(error.message, error.stack);
-      throw new BadRequestException();
+      this.logger.error('Failed to get user', error);
+      throw new Error();
     }
   }
 
@@ -128,16 +127,13 @@ export class UserController {
   })
   @ApiResponse({ status: 200, description: 'User updated successfully' })
   @ApiNotFoundResponse({ description: 'User not found' })
-  async update(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateUserDto: UpdateUserDto,
-  ): Promise<MessageResponse<UpdateUserDto>> {
+  async update(@Param('id', ParseUUIDPipe) id: string, @Body() updateUserDto: UpdateUserDto): Promise<any> {
     try {
       const updatedUser = await this.userService.update(id, updateUserDto);
       return updatedUser;
     } catch (error) {
-      this.logger.error(error.message, error.stack);
-      throw new BadRequestException();
+      this.logger.error('Error updating user', error);
+      throw new Error(error);
     }
   }
 
@@ -168,8 +164,8 @@ export class UserController {
       }
       return user;
     } catch (error) {
-      this.logger.error(error.message, error.stack);
-      throw new BadRequestException();
+      this.logger.error('Failed to get user', error);
+      throw new Error();
     }
   }
 }

@@ -1,11 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { CreateScheduleDto } from 'src/amortization/dtos/creteSchedule.dto';
 import { queryCreateProcedure, queryCreateTemporaryTable } from './constants';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class AmortizationScheduleService {
+
+    private readonly logger = new Logger(AuthService.name);
     constructor(
         @InjectEntityManager()
         private readonly entityManager: EntityManager,
@@ -25,7 +28,12 @@ export class AmortizationScheduleService {
     dropFunction = ``;
 
     async createTemporaryTable(): Promise<void> {
-        await this.entityManager.query(queryCreateTemporaryTable);
+        try {
+            await this.entityManager.query(queryCreateTemporaryTable);
+        } catch (err) {
+            this.logger.error('Error in createTemporaryTable', err);
+            throw new Error();
+        }
     }
     async generateAmortizationSchedule(): Promise<any> {
         try {
@@ -33,7 +41,8 @@ export class AmortizationScheduleService {
             ${queryCreateProcedure}    
              `);
         } catch (err) {
-            throw new BadRequestException();
+            this.logger.error('Error in generateAmortizationSchedule', err);
+            throw new Error();
         }
     }
     async callAmortizationSchedule(createScheduleDto: CreateScheduleDto): Promise<CreateScheduleDto> {
@@ -45,7 +54,8 @@ export class AmortizationScheduleService {
             ${this.queryToCallProcedure({ loan_amount, annual_interest_rate, total_payments, interest_rate_recycled, month_recalculate_loan })}
             `);
         } catch (err) {
-            throw new BadRequestException();
+            this.logger.error('Error in callAmortizationSchedule', err);
+            throw new Error();
         }
     }
 }

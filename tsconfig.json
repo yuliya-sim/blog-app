@@ -48,9 +48,6 @@
       "@shared/*": [
         "libs/shared/src/*"
       ],
-      "@messageResponse/*": [
-        "libs/shared/src/dtos/*"
-      ],
       "@shared-decorators/*": [
         "libs/shared/src/decorators/*"
       ]

@@ -1,12 +1,15 @@
-import { BadRequestException, Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
 import { AmortizationScheduleService } from './amortization-schedule.service';
 import { ApiBadRequestResponse, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateScheduleDto } from './dtos';
+import { AuthService } from '../auth/auth.service';
 
 @ApiTags('schedule')
 @Controller('schedule')
 @ApiBadRequestResponse({ description: 'Bad Request' })
 export class AmortizationScheduleController {
+    private readonly logger = new Logger(AuthService.name);
+
     constructor(private readonly amortizationService: AmortizationScheduleService) { }
 
     @Get('generate-amortization-schedule')
@@ -17,7 +20,8 @@ export class AmortizationScheduleController {
         try {
             return await this.amortizationService.generateAmortizationSchedule();
         } catch (err) {
-            throw new BadRequestException();
+            this.logger.error('Error in generateAmortizationSchedule', err);
+            throw new Error();
         }
     }
     @Post('call-amortization-schedule')
@@ -29,7 +33,8 @@ export class AmortizationScheduleController {
         try {
             return await this.amortizationService.callAmortizationSchedule(createScheduleDto);
         } catch (err) {
-            throw new BadRequestException();
+            this.logger.error('Error in callAmortizationSchedule', err);
+            throw new Error();
         }
     }
 }

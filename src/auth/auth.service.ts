@@ -35,8 +35,8 @@ export class AuthService {
         try {
             return await this.userService.findById(payload.id);
         } catch (error) {
-            this.logger.error(`Error validating user ${payload.id}`, error.stack);
-            throw new UnauthorizedException();
+            this.logger.error(`Error validating user ${payload.id}`, error);
+            throw new Error();
         }
     }
 
@@ -51,8 +51,8 @@ export class AuthService {
             const payload = { id: createdUser.id };
             return await this.jwtService.signAsync(payload);
         } catch (error) {
-            this.logger.error('Error during user registration', error.stack);
-            throw new BadRequestException();
+            this.logger.error('Error during user registration', error);
+            throw new Error();
         }
     }
 
@@ -70,8 +70,8 @@ export class AuthService {
             }
             return this.setRefreshTokenToCookies(tokens, res);
         } catch (error) {
-            this.logger.error('Error during authentication', error.stack);
-            throw new BadRequestException();
+            this.logger.error('Error during authentication', error);
+            throw new Error();
         }
     }
 
@@ -99,8 +99,8 @@ export class AuthService {
                 return createdToken;
             }
         } catch (error) {
-            this.logger.error('Error during getRefreshToken', error.stack);
-            throw new BadRequestException();
+            this.logger.error('Error during getRefreshToken', error);
+            throw new Error();
         }
     }
 
@@ -127,8 +127,8 @@ export class AuthService {
             }
             return this.setRefreshTokenToCookies(tokens, res);
         } catch (error) {
-            this.logger.error('Error during refreshTokens', error.stack);
-            throw new BadRequestException();
+            this.logger.error('Error during refreshTokens', error);
+            throw new Error();
         }
     }
 
@@ -140,8 +140,8 @@ export class AuthService {
                 },
             });
         } catch (error) {
-            this.logger.error('Error during findToken', error.stack);
-            throw new BadRequestException();
+            this.logger.error('Error during findToken', error);
+            throw new Error();
         }
     }
 
@@ -155,8 +155,8 @@ export class AuthService {
             const refreshToken = await this.getRefreshToken(user.id, agent);
             return { accessToken, refreshToken };
         } catch (error) {
-            this.logger.error('Error during generateTokens', error.stack);
-            throw new BadRequestException();
+            this.logger.error('Error during generateTokens', error);
+            throw new Error();
         }
     }
 
@@ -184,8 +184,8 @@ export class AuthService {
             });
             res.sendStatus(HttpStatus.OK);
         } catch (error) {
-            this.logger.error(`Error deleting refresh token: ${error.message}`, error.stack);
-            throw new BadRequestException();
+            this.logger.error('Error deleting refresh token', error);
+            throw new Error();
         }
     }
 

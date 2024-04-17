@@ -1,9 +1,8 @@
 import { Repository } from 'typeorm';
 import { PostEntity as Post, BlogEntity as Blog, UserEntity as User } from '../entities';
-import { BadRequestException, Injectable, Logger, MethodNotAllowedException, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, MethodNotAllowedException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdatePostDto } from './dtos';
-import { MessageResponse } from '@messageResponse/messageResponse.dto';
 import { Role } from '../user/roles/role.enum';
 import { AuthService } from '../auth/auth.service';
 
@@ -24,8 +23,8 @@ export class PostService {
         try {
             return await this.postRepository.find();
         } catch (error) {
-            this.logger.error('Error fetching posts:', error);
-            throw new NotFoundException('Error fetching posts');
+            this.logger.error('Error fetching posts.', error);
+            throw new Error();
         }
     }
 
@@ -42,12 +41,10 @@ export class PostService {
             const user = await this.userRepository.findOne({ where: { id: userId } });
 
             if (!blog) {
-                this.logger.error('Blog not found');
                 return new NotFoundException('Blog not found');
             }
 
             if (blog.author.id !== userId || user.role !== Role.Admin) {
-                this.logger.error("You cannot create a post for this blog or you don't have permission to create it");
                 return new MethodNotAllowedException(
                     "You cannot create a post for this blog or you don't have permission to create it",
                 );
@@ -63,15 +60,14 @@ export class PostService {
             await this.postRepository.save(newPost);
 
             return {
-                message: 'Post was created',
                 post: {
                     title: newPost.title,
                     content: newPost.content,
                 },
             };
         } catch (error) {
-            this.logger.error('Error creating post:', error);
-            throw new BadRequestException();
+            this.logger.error('Error creating post.', error);
+            throw new Error();
         }
     }
 
@@ -79,13 +75,12 @@ export class PostService {
         try {
             const blog = await this.blogRepository.findOne({ where: { id: blogId } });
             if (!blog) {
-                this.logger.error(`Blog with id ${blogId} not found`);
                 throw new NotFoundException(`Blog with id ${blogId} not found`);
             }
             return this.postRepository.find({ where: { blog: { id: blogId } } });
         } catch (error) {
-            this.logger.error(`Error retrieving posts for blog with id ${blogId}`);
-            throw new BadRequestException();
+            this.logger.error(`Error retrieving posts for blog with id ${blogId}`, error);
+            throw new Error();
         }
     }
 
@@ -104,7 +99,6 @@ export class PostService {
                 },
             });
             if (!blog) {
-                this.logger.error(`Blog with slug ${slugId} not found`);
                 throw new NotFoundException(`Blog with slug ${slugId} not found`);
             }
 
@@ -129,16 +123,12 @@ export class PostService {
                 blog_id: blog.id,
             };
         } catch (error) {
-            this.logger.error(`Error retrieving posts for blog with slug ${slugId}`);
-            throw new BadRequestException();
+            this.logger.error(`Error retrieving posts for blog with slug ${slugId}`, error);
+            throw new Error();
         }
     }
 
-    async update(
-        id: string,
-        updatePostDto: UpdatePostDto,
-        userId: string,
-    ): Promise<MessageResponse<Partial<UpdatePostDto>>> {
+    async update(id: string, updatePostDto: UpdatePostDto, userId: string): Promise<Partial<UpdatePostDto>> {
         const { title, content } = updatePostDto;
 
         const fieldsToUpdate: Partial<Post> = {
@@ -153,13 +143,10 @@ export class PostService {
                 where: { id },
             });
 
-            return {
-                message: 'Post updated successfully',
-                post,
-            };
+            return post;
         } catch (err) {
-            this.logger.error(err.message, err.stack);
-            throw new BadRequestException();
+            this.logger.error('Error in update post', err);
+            throw new Error();
         }
     }
 
@@ -169,8 +156,8 @@ export class PostService {
 
             return 'Post deleted successfully';
         } catch (err) {
-            this.logger.error(err.message, err.stack);
-            throw new BadRequestException();
+            this.logger.error('Error in remove post', err);
+            throw new Error();
         }
     }
 
@@ -181,13 +168,12 @@ export class PostService {
                 relations: ['comments'],
             });
             if (!post) {
-                this.logger.error('Post not found');
                 throw new NotFoundException('Post not found');
             }
             return post;
         } catch (error) {
-            this.logger.error('Post not found');
-            throw new BadRequestException();
+            this.logger.error('Post not found', error);
+            throw new Error();
         }
     }
 }

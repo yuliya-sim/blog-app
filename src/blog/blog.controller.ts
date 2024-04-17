@@ -34,7 +34,6 @@ import {
     ApiTags,
 } from '@nestjs/swagger';
 import { CreateBlogDto, updateBlogDto } from './dtos';
-import { MessageResponse } from '@messageResponse/messageResponse.dto';
 import { AuthGuard, JwtAuthGuard } from '../auth/guards';
 import { AuthService } from '../auth/auth.service';
 
@@ -58,8 +57,8 @@ export class BlogController {
             const paginationOptions = { limit, page };
             return await this.blogService.getPaginatedBlogs(paginationOptions);
         } catch (error) {
-            this.logger.error(error.message, error.stack);
-            throw new Error(error.message);
+            this.logger.error('Failed to get blogs', error);
+            throw new Error();
         }
     }
 
@@ -85,8 +84,8 @@ export class BlogController {
 
             return await this.blogService.create(body, req.user.id);
         } catch (error) {
-            this.logger.error(error.message, error.stack);
-            throw new Error(error.message);
+            this.logger.error('Failed to create blog', error);
+            throw new Error();
         }
     }
 
@@ -102,8 +101,8 @@ export class BlogController {
             }
             return blog;
         } catch (error) {
-            this.logger.error(error.message, error.stack);
-            throw new BadRequestException();
+            this.logger.error('Failed to get blog', error);
+            throw new Error();
         }
     }
 
@@ -117,13 +116,13 @@ export class BlogController {
         @Param('id', ParseUUIDPipe) id: string,
         @Body() updateBlogDto: updateBlogDto,
         @Request() req,
-    ): Promise<MessageResponse<updateBlogDto>> {
+    ): Promise<Partial<updateBlogDto>> {
         try {
             const updatedBlog = await this.blogService.update(id, updateBlogDto, req.user.id);
             return updatedBlog;
         } catch (error) {
-            this.logger.error(error.message, error.stack);
-            throw new BadRequestException();
+            this.logger.error('Failed to update blog', error);
+            throw new Error();
         }
     }
 
