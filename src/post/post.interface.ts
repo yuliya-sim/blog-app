@@ -10,7 +10,7 @@ export interface PostDataInterface {
     id: string;
     title: string;
     content: string;
-    createDateTime: string;
+    createdAt: string;
     comments: {
         id: string;
         content: string;
