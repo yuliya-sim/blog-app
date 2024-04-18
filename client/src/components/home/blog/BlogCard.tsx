@@ -4,9 +4,9 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import ButtonBase from '@mui/material/ButtonBase';
 import { Avatar, Chip, Link } from '@material-ui/core';
-import './home.scss';
 
-
+import '../home.scss';
+import { dateFormat } from '../../../api/helpers/date-format';
 
 const Img = styled('img')({
     margin: 'auto',
@@ -15,6 +15,7 @@ const Img = styled('img')({
     maxHeight: '100%'
 
 });
+
 
 export default function BlogCard({ props }) {
     const handleClick = (theme: string) => {
@@ -25,7 +26,6 @@ export default function BlogCard({ props }) {
             sx={{
                 p: 2,
                 marginBottom: '48px',
-
                 maxWidth: 1200,
                 flexGrow: 1,
                 backgroundColor: (theme) =>
@@ -51,7 +51,6 @@ export default function BlogCard({ props }) {
                                         {`${props.firstName || ''} ${props.lastName || ''}`}
                                     </div>
                                 )}
-
                             </Typography>
                             <Typography variant="h4" gutterBottom>
                                 <Link href={props.slug} underline="none">
@@ -60,12 +59,7 @@ export default function BlogCard({ props }) {
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
                                 <div className='date-link'>
-                                    <span>{new Intl.DateTimeFormat('en-US', {
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric'
-                                    }).format(new Date(props?.createdAt))}</span>
-
+                                    <span>{dateFormat(props.createdAt)}</span>
                                     <Grid item>
                                         <Chip
                                             label={props.theme ? props.theme : 'not established'}
@@ -81,7 +75,7 @@ export default function BlogCard({ props }) {
                     <Grid item>
                         <Typography variant="subtitle1" component="div">
 
-                            <svg width="25" height="25" viewBox="0 0 25 25" fill="none" className="" aria-label="Add to list bookmark button">
+                            <svg width="25" height="25" viewBox="0 0 25 25" fill="none" aria-label="Add to list bookmark button">
                                 <path d="M18 2.5a.5.5 0 0 1 1 0V5h2.5a.5.5 0 0 1 0 1H19v2.5a.5.5 0 1 1-1 0V6h-2.5a.5.5 0 0 1 0-1H18V2.5zM7 7a1 1 0 0 1 1-1h3.5a.5.5 0 0 0 0-1H8a2 2 0 0 0-2 2v14a.5.5 0 0 0 .8.4l5.7-4.4 5.7 4.4a.5.5 0 0 0 .8-.4v-8.5a.5.5 0 0 0-1 0v7.48l-5.2-4a.5.5 0 0 0-.6 0l-5.2 4V7z" fill="currentColor"></path>
                             </svg>
 

@@ -23,7 +23,9 @@ const fetchData = async () => {
     return data;
 };
 
-import BlogCard from './BlogCard';
+import BlogCard from './blog/BlogCard';
+import Spinner from './blog/Spinner';
+import { footers } from '../../utils/constants';
 
 const styles = theme => ({
     '@global': {
@@ -75,30 +77,12 @@ const styles = theme => ({
 });
 
 
-const footers = [
-    {
-        title: 'Company',
-        description: ['Team', 'History', 'Contact us', 'Locations'],
-    },
-    {
-        title: 'Features',
-        description: ['Cool stuff', 'Random feature', 'Team feature', 'Developer stuff', 'Another one'],
-    },
-    {
-        title: 'Resources',
-        description: ['Resource', 'Resource name', 'Another resource', 'Final resource'],
-    },
-    {
-        title: 'Legal',
-        description: ['Privacy policy', 'Terms of use'],
-    },
-];
 
 function Home(props: { classes: any; }) {
     const navigate = useNavigate();
 
     const { data, isLoading, error } = useQuery('exampleQuery', fetchData);
-    if (isLoading) return <p>Loading...</p>;
+    if (isLoading) return <Spinner />;
     if (error) return <p>Error: {error.message}</p>;
     const { classes } = props;
 

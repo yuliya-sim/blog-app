@@ -1,8 +1,8 @@
 import Grid from '@mui/material/Grid';
-import { MainProps } from '../../api/types/Main-props';
-import { Post } from '../../api/types/Post';
+import { MainProps } from '../../../api/types/Main-props';
+import { Post } from '../../../api/types/Post';
 
-import AnchorTemporaryDrawer from './Comments';
+import AnchorTemporaryDrawer from '../../comments/Comments';
 import Divider from '@mui/material/Divider';
 import { Button } from '@material-ui/core';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';

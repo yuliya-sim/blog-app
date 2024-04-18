@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import axios from 'axios';
 
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -12,8 +14,9 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import axios from 'axios';
-import { useState } from 'react';
+
+import { validateInput } from '../api/helpers/validate-password';
+
 
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
@@ -31,14 +34,13 @@ export default function SignIn() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        validateInput(name, value);
+        validateInput(name, value, errors, setErrors);
         setFormData((prevData) => ({
             ...prevData,
             [name]: value,
         }));
 
     };
-
     const handleSubmit = async (e: { preventDefault: () => void; currentTarget: { checkValidity: () => any; }; }) => {
         e.preventDefault();
         if (e.currentTarget.checkValidity()) {
@@ -56,25 +58,7 @@ export default function SignIn() {
             }
         }
     };
-    const validateInput = (name: string, value: string) => {
-        let errorMessage = '';
-        if (name === 'password') {
-            if (value.length < 8) {
-                errorMessage = 'Password must be at least 8 characters long';
-            } else if (!/[a-z]/.test(value)) {
-                errorMessage = 'Password must contain at least one lowercase letter';
-            } else if (!/[A-Z]/.test(value)) {
-                errorMessage = 'Password must contain at least one uppercase letter';
-            } else if (!/\d/.test(value)) {
-                errorMessage = 'Password must contain at least one number';
-            }
-        } else {
-            if (!/\S+@\S+\.\S+/.test(value)) {
-                errorMessage = 'Please enter a valid email';
-            }
-        }
-        setErrors({ ...errors, [name]: errorMessage });
-    };
+
     return (
         <ThemeProvider theme={defaultTheme}>
             <Container component="main" maxWidth="xs">
