@@ -50,12 +50,7 @@ export default function AnchorTemporaryDrawer({ props }) {
         }
     }
 
-    /**
-     * A function that deletes a comment based on the provided commentId.
-     *
-     * @param {string} commentId - The id of the comment to be deleted
-     * @return {Promise<void>} Promise that resolves once the comment is deleted
-     */
+
     const deleteComment = async (commentId: string) => {
         const token = localStorage.getItem('token');
         if (!token) return;

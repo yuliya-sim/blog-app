@@ -1,20 +1,11 @@
-import * as React from 'react';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
+import { FeaturedPostProps } from '../../api/types';
 
-interface FeaturedPostProps {
-    post: {
-        date: string;
-        description: string;
-        image: string;
-        imageLabel: string;
-        title: string;
-    };
-}
 
 export default function FeaturedPost(props: FeaturedPostProps) {
     const { post } = props;

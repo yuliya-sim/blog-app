@@ -1,6 +1,6 @@
 import Grid from '@mui/material/Grid';
-import { MainProps } from './interfaces/main-props';
-import { Post } from './interfaces/post';
+import { MainProps } from '../../api/types/Main-props';
+import { Post } from '../../api/types/Post';
 
 import AnchorTemporaryDrawer from './Comments';
 import Divider from '@mui/material/Divider';

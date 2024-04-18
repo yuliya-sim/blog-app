@@ -1,9 +1,9 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Home from './Home/Home';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import './App.css'
 import Blog from './blog/Blog';
+import Home from './home/Home';
 import SignIn from './auth/SignIn';
 import CreateComment from './blog/CreateComment';
 import CreatePost from './blog/CreatePost';

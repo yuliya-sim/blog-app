@@ -17,8 +17,8 @@ const Img = styled('img')({
 });
 
 export default function BlogCard({ props }) {
-    const handleClick = () => {
-        console.info('You clicked the Chip.');
+    const handleClick = (theme: string) => {
+        console.info(`selected theme: ${theme}`);
     }
     return (
         <Paper
@@ -67,9 +67,13 @@ export default function BlogCard({ props }) {
                                     }).format(new Date(props?.createdAt))}</span>
 
                                     <Grid item>
-                                        <Chip label={props.theme ? props.theme : 'not established'} onClick={handleClick} />
-                                    </Grid></div>
-
+                                        <Chip
+                                            label={props.theme ? props.theme : 'not established'}
+                                            onClick={() => handleClick(props.theme || 'not established')}
+                                            color={props.theme ? 'primary' : 'default'}
+                                        />
+                                    </Grid>
+                                </div>
                             </Typography>
                         </Grid>
 
