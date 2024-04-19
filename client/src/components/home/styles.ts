@@ -45,4 +45,8 @@ export const styles = theme => ({
         borderTop: `1px solid ${theme.palette.divider}`,
         padding: `${theme.spacing(6)}px 0`,
     },
+    toolbar: {
+        display: 'flex',
+        gap: '1rem',
+    },
 });

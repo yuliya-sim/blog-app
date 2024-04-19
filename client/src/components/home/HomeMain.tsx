@@ -16,9 +16,9 @@ export function HomeMain({ data, classes }: any) {
 
 
             {data["results"] && data["results"].length > 0 ? (
-                <Grid spacing={10} alignItems="center"  >
+                <Grid spacing={10} alignItems="center" >
                     {data["results"]?.map((blog: any) => (
-                        <BlogCard props={blog} />
+                        <BlogCard key={blog.id} props={blog} />
 
                     ))}
                 </Grid>
