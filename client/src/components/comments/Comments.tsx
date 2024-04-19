@@ -12,7 +12,6 @@ import { CommentsList } from './CommentsList';
 import { boxComments, commentIcon } from './styles';
 
 type Anchor = 'right';
-
 export default function AnchorTemporaryDrawer({ props }) {
     const [state, setState] = useState({
         right: false,
