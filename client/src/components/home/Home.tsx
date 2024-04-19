@@ -11,7 +11,7 @@ import { HomeFooter } from './HomeFooter';
 import Spinner from '../shared/Spinner';
 
 import { styles } from './styles';
-import { fetchData } from '../../api/helpers/fetch-blog';
+import { fetchData } from '../../api/helpers/axios/fetch-blog';
 
 
 function Home(props: { classes: any; }) {

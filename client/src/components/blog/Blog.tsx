@@ -1,19 +1,21 @@
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Alert } from '@mui/material';
 
-import Header from './Header';
 import MainFeaturedPost from '../posts/MainFeaturedPost';
 import Main from './Main';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
 
 import { sections, sidebar } from '../../utils/constants';
+import { fetchPostsData } from '../../api/helpers/axios/fetch-posts';
+import Spinner from '../shared/Spinner';
+import BlogHeader from './BlogHeader';
 
 
 const defaultTheme = createTheme();
@@ -22,25 +24,26 @@ export default function Blog() {
 
     const { id } = useParams();
 
-    const fetchData = async () => {
+    const { data, isLoading, error } = useQuery('exampleQuery', () => {
+        if (id) {
+            return fetchPostsData(id);
+        } else {
+            throw new Error('id is undefined');
+        }
+    });
 
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}posts/slug/${id}`);
-        const data = await response.data;
-        return data;
-    };
-    const { data, isLoading, error } = useQuery('exampleQuery', fetchData);
-    if (isLoading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error.message}</p>;
+    if (isLoading) return <Spinner />;
+    if (error) return <Alert variant="filled" severity="error">An error has occurred. </Alert>
 
     return (
         <ThemeProvider theme={defaultTheme}>
             <CssBaseline />
             <Container maxWidth="lg">
-                <Header title={data?.title} sections={sections} blog_id={data?.blog_id} />
+                <BlogHeader title={data?.title} sections={sections} blog_id={data?.blog_id} />
                 <main>
-                    <MainFeaturedPost blog={data} />
+                    <MainFeaturedPost blog={data} linkText={''} />
                     <Grid container spacing={5} sx={{ mt: 3 }}>
-                        <Main posts={data?.posts} blog_id={data?.blog_id} />
+                        <Main posts={data?.posts} blog_id={data?.blog_id} title={''} comments={[]} />
                         <Sidebar
                             title={sidebar.title}
                             description={sidebar.description}

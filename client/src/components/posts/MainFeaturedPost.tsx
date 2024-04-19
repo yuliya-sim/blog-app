@@ -29,7 +29,6 @@ export default function MainFeaturedPost(props: MainFeaturedPostProps) {
                 backgroundImage: `url(https://source.unsplash.com/random?wallpapers)`,
             }}
         >
-            {/* Increase the priority of the hero background image */}
             {<img style={{ display: 'none' }} src="https://source.unsplash.com/random?wallpapers" alt="Blog img" />}
             <Box
                 sx={{

@@ -1,12 +1,7 @@
 import { AppBar, Button, Toolbar, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import Authentication from "../shared/Autentication";
 
 export function HomeHeader({ classes }: any) {
-
-    const navigate = useNavigate();
-    const login = () => {
-        navigate('/login');
-    };
 
     return (
         <AppBar position="static" color="default" className={classes.appBar}>
@@ -17,14 +12,7 @@ export function HomeHeader({ classes }: any) {
                 <Button>Our story</Button>
                 <Button>Membership</Button>
                 <Button>Write</Button>
-                {localStorage.getItem('token') ? (
-                    <Button color="primary" variant="outlined" onClick={() => {
-                        localStorage.removeItem('token');
-                        navigate('/');
-                    }}>Logout</Button>
-                ) : (
-                    <Button color="primary" variant="outlined" onClick={login} >Sign In</Button>
-                )}
+                <Authentication />
             </Toolbar>
         </AppBar>
     )

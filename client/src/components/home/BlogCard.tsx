@@ -6,7 +6,7 @@ import ButtonBase from '@mui/material/ButtonBase';
 import { Avatar, Chip, Link } from '@material-ui/core';
 
 
-import { blogCard } from './styles';
+import { Img, blogCard } from './styles';
 import './home.scss';
 import { checkUserFirstLastName } from '../../api/helpers/validate-name-surname';
 import { dateFormat } from '../../api/helpers/date-format';

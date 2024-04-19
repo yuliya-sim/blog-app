@@ -12,3 +12,11 @@ export interface Blog {
     content: string,
     publish_at: string
 }
+export interface HeaderProps {
+    sections: ReadonlyArray<{
+        title: string;
+        url: string;
+    }>;
+    title: string;
+    blog_id: string
+}
