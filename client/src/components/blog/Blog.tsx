@@ -8,12 +8,12 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import Header from './Header';
-import MainFeaturedPost from '../../posts/MainFeaturedPost';
+import MainFeaturedPost from '../posts/MainFeaturedPost';
 import Main from './Main';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
 
-import { sections, sidebar } from '../../../utils/constants';
+import { sections, sidebar } from '../../utils/constants';
 
 
 const defaultTheme = createTheme();

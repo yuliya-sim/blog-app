@@ -1,5 +1,5 @@
 import { Grid, Typography } from "@mui/material";
-import BlogCard from "./blog/BlogCard";
+import BlogCard from "./BlogCard";
 
 
 export function HomeMain({ data, classes }: any) {

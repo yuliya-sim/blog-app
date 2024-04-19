@@ -1,3 +1,5 @@
+import { styled } from '@mui/material/styles';
+
 export const styles = theme => ({
     '@global': {
         body: {
@@ -50,3 +52,20 @@ export const styles = theme => ({
         gap: '1rem',
     },
 });
+
+export const Img = styled('img')({
+    margin: 'auto',
+    display: 'flex',
+    maxWidth: '100%',
+    maxHeight: '100%'
+
+});
+
+export const blogCard = {
+    p: 2,
+    marginBottom: '48px',
+    maxWidth: 1200,
+    flexGrow: 1,
+    backgroundColor: (theme) =>
+        theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+}

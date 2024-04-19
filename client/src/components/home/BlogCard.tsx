@@ -1,37 +1,22 @@
-import { styled } from '@mui/material/styles';
+
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import ButtonBase from '@mui/material/ButtonBase';
 import { Avatar, Chip, Link } from '@material-ui/core';
 
-import '../home.scss';
-import { dateFormat } from '../../../api/helpers/date-format';
 
-const Img = styled('img')({
-    margin: 'auto',
-    display: 'flex',
-    maxWidth: '100%',
-    maxHeight: '100%'
-
-});
-
+import { blogCard } from './styles';
+import './home.scss';
+import { checkUserFirstLastName } from '../../api/helpers/validate-name-surname';
+import { dateFormat } from '../../api/helpers/date-format';
 
 export default function BlogCard({ props }) {
     const handleClick = (theme: string) => {
         console.info(`selected theme: ${theme}`);
     }
     return (
-        <Paper
-            sx={{
-                p: 2,
-                marginBottom: '48px',
-                maxWidth: 1200,
-                flexGrow: 1,
-                backgroundColor: (theme) =>
-                    theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-            }}
-        >
+        <Paper sx={blogCard}        >
             <Grid container spacing={2}>
                 <Grid item>
                     <ButtonBase sx={{ width: 200, height: 134 }}>
@@ -45,10 +30,10 @@ export default function BlogCard({ props }) {
                                 {(props.firstName || props.lastName) && (
                                     <div className='author'>
                                         <Avatar
-                                            alt={`${props.firstName || ''} ${props.lastName || ''}`}
+                                            alt={checkUserFirstLastName(props)}
                                             src={`${props.avatarUrl || '/static/images/avatar/1.jpg'}`}
                                         />
-                                        {`${props.firstName || ''} ${props.lastName || ''}`}
+                                        {checkUserFirstLastName(props)}
                                     </div>
                                 )}
                             </Typography>
@@ -74,11 +59,9 @@ export default function BlogCard({ props }) {
                     </Grid>
                     <Grid item>
                         <Typography variant="subtitle1" component="div">
-
                             <svg width="25" height="25" viewBox="0 0 25 25" fill="none" aria-label="Add to list bookmark button">
                                 <path d="M18 2.5a.5.5 0 0 1 1 0V5h2.5a.5.5 0 0 1 0 1H19v2.5a.5.5 0 1 1-1 0V6h-2.5a.5.5 0 0 1 0-1H18V2.5zM7 7a1 1 0 0 1 1-1h3.5a.5.5 0 0 0 0-1H8a2 2 0 0 0-2 2v14a.5.5 0 0 0 .8.4l5.7-4.4 5.7 4.4a.5.5 0 0 0 .8-.4v-8.5a.5.5 0 0 0-1 0v7.48l-5.2-4a.5.5 0 0 0-.6 0l-5.2 4V7z" fill="currentColor"></path>
                             </svg>
-
                         </Typography>
                     </Grid>
                 </Grid>

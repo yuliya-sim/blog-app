@@ -2,7 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import './App.css'
-import Blog from './components/home/blog/Blog';
+import Blog from './components/blog/Blog';
 import Home from './components/home/Home';
 import SignIn from './auth/SignIn';
 import CreateComment from './components/comments/CreateComment';
