@@ -1,7 +1,6 @@
 
 
 export interface Blog {
-    published: boolean;
     isActive: boolean;
     isArchived: boolean;
     createdAt: string;
