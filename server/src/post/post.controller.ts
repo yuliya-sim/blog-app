@@ -109,9 +109,9 @@ export class PostController {
         try {
             const updatedBlog = await this.postService.update(id, updatePostDto, req.user.id);
             return updatedBlog;
-        } catch (error) {
-            this.logger.error(' Error in update post', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error(' Error in update post', err);
+            throw err;
         }
     }
 

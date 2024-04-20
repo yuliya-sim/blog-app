@@ -51,9 +51,9 @@ export class CommentController {
     ): Promise<CreateCommentDto> {
         try {
             return await this.commentService.create(id, createCommentDto, req.user.id);
-        } catch (error) {
-            this.logger.error(' Error in create comment', error);
-            throw new Error()
+        } catch (err) {
+            this.logger.error(' Error in create comment', err);
+            throw err;
         }
     }
 
@@ -75,9 +75,9 @@ export class CommentController {
     ): Promise<Partial<CreateCommentDto>> {
         try {
             return await this.commentService.update(id, updateCommentDto);
-        } catch (error) {
-            this.logger.error(' Error in update comment', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error(' Error in update comment', err);
+            throw err;
         }
     }
 }

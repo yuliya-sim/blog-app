@@ -36,9 +36,9 @@ export class UserService {
         results: users,
         total,
       });
-    } catch (error) {
-      this.logger.error('Error while fetching users ', error);
-      throw new Error();
+    } catch (err) {
+      this.logger.error('Error while fetching users ', err);
+      throw err;
     }
   }
 
@@ -51,9 +51,9 @@ export class UserService {
 
       const createdUser = await this.userRepository.save(user);
       return createdUser;
-    } catch (error) {
-      this.logger.error(' Error while creating user ', error);
-      throw new Error();
+    } catch (err) {
+      this.logger.error(' Error while creating user ', err);
+      throw err;
     }
   }
 
@@ -86,7 +86,7 @@ export class UserService {
       return updatedUserEntity;
     } catch (err) {
       this.logger.error('Error while updating user ', err);
-      throw new Error();
+      throw err;
     }
   }
 
@@ -98,18 +98,18 @@ export class UserService {
         },
         select: ['id', 'firstName', 'lastName', 'role'],
       });
-    } catch (error) {
-      this.logger.error('Error while finding by email user ', error);
-      throw new Error();
+    } catch (err) {
+      this.logger.error('Error while finding by email user ', err);
+      throw err;
     }
   }
 
   async findById(userId: string): Promise<UserEntity> {
     try {
       return await this.userRepository.findOne({ where: { id: userId } });
-    } catch (error) {
-      this.logger.error('Error while finding user ', error);
-      throw new Error();
+    } catch (err) {
+      this.logger.error('Error while finding user ', err);
+      throw err;
     }
   }
 
@@ -122,27 +122,27 @@ export class UserService {
         throw new NotFoundException('Token not found');
       }
       return tokenEntity.user;
-    } catch (error) {
-      this.logger.error('Error while fetching user ', error);
-      throw new Error();
+    } catch (err) {
+      this.logger.error('Error while fetching user ', err);
+      throw err;
     }
   }
 
   async getHash(password: string): Promise<string> {
     try {
       return await bcrypt.hash(password, this.saltRounds);
-    } catch (error) {
-      this.logger.error('Error while hashing password ', error);
-      throw new Error();
+    } catch (err) {
+      this.logger.error('Error while hashing password ', err);
+      throw err;
     }
   }
 
   async compareHash(password: string, hash: string): Promise<boolean> {
     try {
       return await bcrypt.compare(password, hash);
-    } catch (error) {
-      this.logger.error('Error while comparing password ', error);
-      throw new Error();
+    } catch (err) {
+      this.logger.error('Error while comparing password ', err);
+      throw err;
     }
   }
 
@@ -165,9 +165,9 @@ export class UserService {
       }
 
       return user;
-    } catch (error) {
-      this.logger.error('Error while finding user ', error);
-      throw new Error();
+    } catch (err) {
+      this.logger.error('Error while finding user ', err);
+      throw err;
     }
   }
 
@@ -178,7 +178,7 @@ export class UserService {
       return 'User deleted successfully';
     } catch (err) {
       this.logger.error('Error in remove service', err);
-      throw new Error();
+      throw err;
     }
   }
 }

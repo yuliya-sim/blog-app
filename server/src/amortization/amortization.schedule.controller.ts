@@ -21,7 +21,7 @@ export class AmortizationScheduleController {
             return await this.amortizationService.generateAmortizationSchedule();
         } catch (err) {
             this.logger.error('Error in generateAmortizationSchedule', err);
-            throw new Error();
+            throw err;
         }
     }
     @Post('call-amortization-schedule')
@@ -34,7 +34,7 @@ export class AmortizationScheduleController {
             return await this.amortizationService.callAmortizationSchedule(createScheduleDto);
         } catch (err) {
             this.logger.error('Error in callAmortizationSchedule', err);
-            throw new Error();
+            throw err;
         }
     }
 }

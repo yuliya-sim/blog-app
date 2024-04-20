@@ -56,9 +56,9 @@ export class BlogController {
         try {
             const paginationOptions = { limit, page };
             return await this.blogService.getPaginatedBlogs(paginationOptions);
-        } catch (error) {
-            this.logger.error('Failed to get blogs', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Failed to get blogs', err);
+            throw err;
         }
     }
 
@@ -85,7 +85,7 @@ export class BlogController {
             return await this.blogService.create(body, req.user.id);
         } catch (error) {
             this.logger.error('Failed to create blog', error);
-            throw new Error();
+            throw err;
         }
     }
 
@@ -100,9 +100,9 @@ export class BlogController {
                 throw new NotFoundException();
             }
             return blog;
-        } catch (error) {
-            this.logger.error('Failed to get blog', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Failed to get blog', err);
+            throw err;
         }
     }
 
@@ -120,9 +120,9 @@ export class BlogController {
         try {
             const updatedBlog = await this.blogService.update(id, updateBlogDto, req.user.id);
             return updatedBlog;
-        } catch (error) {
-            this.logger.error('Failed to update blog', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Failed to update blog', err);
+            throw err;
         }
     }
 

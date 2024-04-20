@@ -29,7 +29,7 @@ export class CommentService {
             return { post, blogId: post.blog ? post.blog.id : null };
         } catch (err) {
             this.logger.error('Error in findPostById ', err);
-            throw new Error();
+            throw err;
         }
     }
     async create(postId: string, createCommentDto: CreateCommentDto, userId: string): Promise<CommentEntity> {
@@ -50,7 +50,7 @@ export class CommentService {
             return savedComment;
         } catch (err) {
             this.logger.error(' Error in create comment', err);
-            throw new Error();
+            throw err;
         }
     }
 
@@ -67,7 +67,7 @@ export class CommentService {
             return 'Comment deleted successfully';
         } catch (err) {
             this.logger.error(' Error in remove comment', err);
-            throw new Error();
+            throw err;
         }
     }
 
@@ -84,7 +84,7 @@ export class CommentService {
             return comment;
         } catch (err) {
             this.logger.error('Error in update comment', err);
-            throw new Error();
+            throw err;
         }
     }
 }
