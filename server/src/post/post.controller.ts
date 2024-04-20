@@ -10,9 +10,7 @@ import {
     Put,
     Delete,
     UseGuards,
-    Request,
     Logger,
-    BadRequestException,
 } from '@nestjs/common';
 import {
     ApiBadRequestResponse,
@@ -32,6 +30,7 @@ import { UpdatePostDto } from './dtos';
 import { JwtAuthGuard } from '../auth/guards';
 import { AuthService } from '../auth/auth.service';
 import { PostsBySlugResponse } from './post.interface';
+import { UserId } from '../../libs/shared/src/decorators';
 
 @ApiTags('posts')
 @ApiBadRequestResponse({ description: 'Bad Request' })
@@ -73,8 +72,8 @@ export class PostController {
     @ApiOperation({ summary: 'Create post' })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     @ApiNotFoundResponse({ description: 'Blog not found' })
-    async create(@Param('blogId', ParseUUIDPipe) blogId: string, @Body() createPostDto: UpdatePostDto, @Request() req) {
-        return this.postService.create(blogId, createPostDto, req.user.id);
+    async create(@Param('blogId', ParseUUIDPipe) blogId: string, @Body() createPostDto: UpdatePostDto, @UserId() req) {
+        return this.postService.create(blogId, createPostDto, req);
     }
 
     @Get(':postId')
@@ -104,10 +103,10 @@ export class PostController {
     async update(
         @Param('id', ParseUUIDPipe) id: string,
         @Body() updatePostDto: UpdatePostDto,
-        @Request() req,
+        @UserId() req,
     ): Promise<Partial<UpdatePostDto>> {
         try {
-            const updatedBlog = await this.postService.update(id, updatePostDto, req.user.id);
+            const updatedBlog = await this.postService.update(id, updatePostDto, req);
             return updatedBlog;
         } catch (err) {
             this.logger.error(' Error in update post', err);
