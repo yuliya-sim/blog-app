@@ -7,7 +7,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Alert from '@mui/material/Alert';
 import { HomeHeader } from './HomeHeader';
 import { HomeMain } from './HomeMain';
-import { HomeFooter } from './HomeFooter';
 import Spinner from '../shared/Spinner';
 
 import { styles } from './styles';
@@ -27,7 +26,6 @@ function Home(props: { classes: any; }) {
             <CssBaseline />
             <HomeHeader classes={classes} />
             <HomeMain data={data} classes={classes} />
-            <HomeFooter classes={classes} />
         </>
     );
 }
