@@ -13,3 +13,8 @@
     align-items: center;
     gap: 1rem;
 }
+.posts {
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+}

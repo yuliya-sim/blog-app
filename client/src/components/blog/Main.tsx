@@ -37,8 +37,8 @@ export default function Main(props: MainProps) {
         >
             <Divider />
             {posts?.map((post: Post) => (
-                <div key={post.id}>
-                    <b> {post.title}</b>{' '}
+                <div key={post.id} className="posts">
+                    <b> {post.title}</b>
                     <span> {dateFormat(post.createdAt)}</span>
                     <br></br>
                     {post.content}
