@@ -18,9 +18,11 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "pretypeorm": "(rm ormconfig.json || :) && ts-node -r tsconfig-paths/register src/scripts/write-type-orm-config.ts",
-    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js ",
-    "typeorm:migration:create": "npm run typeorm -- migration:create ./src/migration/$npm_config_name"
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "typeorm:migration:create": "npm run typeorm -- migration:create ./src/migration/$npm_config_name",
+    "seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js config -n src/config/typeorm.config-migrations.ts",
+    "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed -n src/config/typeorm.config-migrations.ts",
+    "db:refresh": "npm run typeorm:cli schema:drop && npm run migration:run && npm run seed:run"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -46,6 +48,7 @@
     "slugify": "^1.6.6",
     "swagger-ui-express": "^5.0.0",
     "typeorm": "^0.3.20",
+    "typeorm-seeding": "^1.6.1",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

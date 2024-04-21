@@ -153,6 +153,11 @@ export class AuthService {
                 roles: user.role,
             });
             const refreshToken = await this.getRefreshToken(user.id, agent);
+
+            if (!refreshToken) {
+                throw new Error('Refresh token not found');
+            }
+
             return { accessToken, refreshToken };
         } catch (err) {
             this.logger.error('Error during generateTokens', err);
