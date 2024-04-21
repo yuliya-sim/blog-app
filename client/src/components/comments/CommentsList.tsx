@@ -22,12 +22,12 @@ export function CommentsList({ props }) {
                             <ListItem>
                                 <ListItemAvatar>
                                     <Avatar
-                                        alt={checkUserFirstLastName(data)}
+                                        alt={checkUserFirstLastName(data.user)}
                                         src={`${data.user.avatarUrl || '/static/images/avatar/1.jpg'}`} />
                                 </ListItemAvatar>
-                                <ListItemText primary={checkUserFirstLastName(data) && (
+                                <ListItemText primary={checkUserFirstLastName(data.user) && (
                                     <div className='author'>
-                                        <div> {checkUserFirstLastName(data)} </div>
+                                        <div> {checkUserFirstLastName(data.user)} </div>
                                     </div>
                                 )} secondary={calculateTimePassed(data.createdAt)}
                                 />
