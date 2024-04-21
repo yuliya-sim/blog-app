@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 import './createPost.scss';
+import { Card, CardActions, CardContent } from '@mui/material';
 
 export default function CreatePost() {
 
@@ -56,27 +57,28 @@ export default function CreatePost() {
             noValidate
             autoComplete="off"
         >
+            <Card sx={{ minWidth: 200, minHeight: 200 }}>
+                <CardContent> <div className='create-post'>
+                    <TextField
+                        id="outlined-content"
+                        label="Title"
+                        variant="outlined"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                    />
+                    <TextField
+                        id="outlined-content"
+                        label="Content"
+                        variant="outlined"
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                    />
 
-            <div className='create-post'>
-                <TextField
-                    id="outlined-content"
-                    label="Title"
-                    variant="outlined"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                />
-                <TextField
-                    id="outlined-content"
-                    label="Content"
-                    variant="outlined"
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                />
-
-            </div>
-            <Button type="submit" variant="contained">
-                Submit
-            </Button>
+                </div></CardContent>
+                <CardActions><Button type="submit" variant="contained">
+                    Submit
+                </Button></CardActions>
+            </Card>
         </Box>
     );
 }

@@ -33,7 +33,7 @@ const PostToDelete = (post: { id: string; }) => {
 
     return (
         <Button size="small" className="write-btn" >
-            <DeleteOutlinedIcon color='default' onClick={() => deletePost(post.id)} />
+            <DeleteOutlinedIcon color='action' onClick={() => deletePost(post.id)} />
         </Button>
 
     );
