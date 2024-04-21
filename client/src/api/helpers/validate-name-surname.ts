@@ -1,9 +1,8 @@
-import { CommentData } from "../types/Comments";
+import { User } from "../types/Comments";
 
-export const checkUserFirstLastName = (data: CommentData) => {
+export const checkUserFirstLastName = (data: User) => {
     return (
-        (data.user.firstName || '') + ' ' +
-        (data.user.lastName || '') || ''
+        (data && data.firstName ? data.firstName : '') + ' ' +
+        (data && data.lastName ? data.lastName : '')
     );
-
 }
