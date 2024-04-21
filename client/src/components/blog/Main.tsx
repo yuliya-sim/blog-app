@@ -9,7 +9,9 @@ import AnchorTemporaryDrawer from '../comments/Comments';
 import { dateFormat } from '../../api/helpers/date-format';
 import { isTokenExpired } from '../../api/helpers/check-token-expired';
 
-import PostToDelete from './PostToDelete';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import axios from 'axios';
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 import './blog.scss';
 
@@ -23,6 +25,25 @@ export default function Main(props: MainProps) {
         const path = isLoggedIn ? '/create-comment/' + postId : '/login';
 
         navigate(path);
+    }
+    const deletePost = async (id: string) => {
+        const token = localStorage.getItem('token');
+        const isLoggedIn = !isTokenExpired(token) && token !== null;
+
+        if (isLoggedIn) {
+            try {
+                const url = `${import.meta.env.VITE_BACKEND_URL}posts/${id}`;
+                const token = localStorage.getItem('token');
+                const headers = { Authorization: `Bearer ${token}` };
+
+                await axios.delete(url, { headers });
+                navigate('/');
+            } catch (error) {
+                console.error('Error deleting post:', error);
+            }
+        } else {
+            navigate('/login');
+        }
     }
     return (
         <Grid
@@ -45,7 +66,9 @@ export default function Main(props: MainProps) {
                     <Divider />
                     <div className='posts-actions'>
                         <AnchorTemporaryDrawer props={post?.comments} />
-                        <PostToDelete post={post} />
+                        <Button size="small" className="write-btn" >
+                            <DeleteOutlinedIcon color='action' onClick={() => deletePost(post.id)} />
+                        </Button>
                         <Button size="small" className="write-btn" onClick={() => redirect(post.id)}>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-label="Write">
                                 <path d="M14 4a.5.5 0 0 0 0-1v1zm7 6a.5.5 0 0 0-1 0h1zm-7-7H4v1h10V3zM3 4v16h1V4H3zm1 17h16v-1H4v1zm17-1V10h-1v10h1zm-1 1a1 1 0 0 0 1-1h-1v1zM3 20a1 1 0 0 0 1 1v-1H3zM4 3a1 1 0 0 0-1 1h1V3z" fill="currentColor"></path>
