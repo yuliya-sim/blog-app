@@ -5,15 +5,13 @@ export abstract class BaseEntity {
   id: string;
 
   @CreateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
+    type: 'timestamp with time zone',
     name: 'create_date_time',
   })
   createdAt: Date;
 
   @UpdateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
+    type: 'timestamp with time zone',
     name: 'last_changed_date_time',
   })
   updatedAt: Date;

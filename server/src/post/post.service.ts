@@ -23,9 +23,9 @@ export class PostService {
     async getAllPosts(): Promise<Post[]> {
         try {
             return await this.postRepository.find();
-        } catch (error) {
-            this.logger.error('Error fetching posts.', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Error fetching posts.', err);
+            throw err;
         }
     }
 
@@ -66,9 +66,9 @@ export class PostService {
                     content: newPost.content,
                 },
             };
-        } catch (error) {
-            this.logger.error('Error creating post.', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Error creating post.', err);
+            throw err;
         }
     }
 
@@ -79,9 +79,9 @@ export class PostService {
                 throw new NotFoundException(`Blog with id ${blogId} not found`);
             }
             return this.postRepository.find({ where: { blog: { id: blogId } } });
-        } catch (error) {
-            this.logger.error(`Error retrieving posts for blog with id ${blogId}`, error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error(`Error retrieving posts for blog with id ${blogId}`, err);
+            throw err;
         }
     }
 
@@ -121,9 +121,9 @@ export class PostService {
                 blog_content: blog.content,
                 blog_id: blog.id,
             };
-        } catch (error) {
-            this.logger.error(`Error retrieving posts for blog with slug ${slugId}`, error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error(`Error retrieving posts for blog with slug ${slugId}`, err);
+            throw err;
         }
     }
 
@@ -145,7 +145,7 @@ export class PostService {
             return post;
         } catch (err) {
             this.logger.error('Error in update post', err);
-            throw new Error();
+            throw err;
         }
     }
 
@@ -156,7 +156,7 @@ export class PostService {
             return 'Post deleted successfully';
         } catch (err) {
             this.logger.error('Error in remove post', err);
-            throw new Error();
+            throw err;
         }
     }
 
@@ -170,9 +170,9 @@ export class PostService {
                 throw new NotFoundException('Post not found');
             }
             return post;
-        } catch (error) {
-            this.logger.error('Post not found', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Post not found', err);
+            throw err;
         }
     }
 }

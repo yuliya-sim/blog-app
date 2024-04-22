@@ -15,9 +15,7 @@ import {
     ParseUUIDPipe,
     Delete,
     UseGuards,
-    Request,
     Logger,
-    BadRequestException,
 } from '@nestjs/common';
 import { BlogEntity } from './../entities';
 import { Pagination } from '../utils/paginate';
@@ -36,6 +34,7 @@ import {
 import { CreateBlogDto, updateBlogDto } from './dtos';
 import { AuthGuard, JwtAuthGuard } from '../auth/guards';
 import { AuthService } from '../auth/auth.service';
+import { UserId } from '../../libs/shared/src/decorators';
 
 @ApiTags('blogs')
 @Controller('blog')
@@ -56,9 +55,9 @@ export class BlogController {
         try {
             const paginationOptions = { limit, page };
             return await this.blogService.getPaginatedBlogs(paginationOptions);
-        } catch (error) {
-            this.logger.error('Failed to get blogs', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Failed to get blogs', err);
+            throw err;
         }
     }
 
@@ -66,7 +65,6 @@ export class BlogController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
     @HttpCode(HttpStatus.CREATED)
-
     @ApiOperation({ summary: 'Create blog' })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     @ApiResponse({
@@ -74,7 +72,7 @@ export class BlogController {
         description: 'The blog has been successfully created',
     })
     @ApiBadRequestResponse({ description: 'Bad Request' })
-    async create(@Body() body: CreateBlogDto, @Request() req): Promise<BlogEntity> {
+    async create(@Body() body: CreateBlogDto, @UserId() req): Promise<BlogEntity> {
         try {
             const exists = await this.blogService.findBySlug(body.title);
 
@@ -82,10 +80,10 @@ export class BlogController {
                 throw new UnprocessableEntityException('Title already exists');
             }
 
-            return await this.blogService.create(body, req.user.id);
-        } catch (error) {
-            this.logger.error('Failed to create blog', error);
-            throw new Error();
+            return await this.blogService.create(body, req);
+        } catch (err) {
+            this.logger.error('Failed to create blog', err);
+            throw err;
         }
     }
 
@@ -100,9 +98,9 @@ export class BlogController {
                 throw new NotFoundException();
             }
             return blog;
-        } catch (error) {
-            this.logger.error('Failed to get blog', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Failed to get blog', err);
+            throw err;
         }
     }
 
@@ -115,14 +113,14 @@ export class BlogController {
     async update(
         @Param('id', ParseUUIDPipe) id: string,
         @Body() updateBlogDto: updateBlogDto,
-        @Request() req,
+        @UserId() req,
     ): Promise<Partial<updateBlogDto>> {
         try {
-            const updatedBlog = await this.blogService.update(id, updateBlogDto, req.user.id);
+            const updatedBlog = await this.blogService.update(id, updateBlogDto, req);
             return updatedBlog;
-        } catch (error) {
-            this.logger.error('Failed to update blog', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Failed to update blog', err);
+            throw err;
         }
     }
 
@@ -131,7 +129,7 @@ export class BlogController {
     @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'Delete blog' })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async remove(@Param('id') id: string, @Request() req): Promise<string> {
-        return this.blogService.remove(id, req.user.id);
+    async remove(@Param('id') id: string, @UserId() req): Promise<string> {
+        return this.blogService.remove(id, req);
     }
 }

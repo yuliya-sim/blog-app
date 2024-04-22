@@ -9,7 +9,6 @@ import {
     Post,
     Put,
     UseGuards,
-    Request,
     Logger,
 } from '@nestjs/common';
 import { CommentService } from './comment.service';
@@ -24,6 +23,7 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards';
 import { AuthService } from '../auth/auth.service';
+import { UserId } from '../../libs/shared/src/decorators';
 
 @ApiTags('comments')
 @ApiBadRequestResponse({ description: 'Bad Request' })
@@ -47,13 +47,13 @@ export class CommentController {
     async create(
         @Param('id', ParseUUIDPipe) id: string,
         @Body() createCommentDto: CreateCommentDto,
-        @Request() req,
+        @UserId() req,
     ): Promise<CreateCommentDto> {
         try {
-            return await this.commentService.create(id, createCommentDto, req.user.id);
-        } catch (error) {
-            this.logger.error(' Error in create comment', error);
-            throw new Error()
+            return await this.commentService.create(id, createCommentDto, req);
+        } catch (err) {
+            this.logger.error(' Error in create comment', err);
+            throw err;
         }
     }
 
@@ -75,9 +75,9 @@ export class CommentController {
     ): Promise<Partial<CreateCommentDto>> {
         try {
             return await this.commentService.update(id, updateCommentDto);
-        } catch (error) {
-            this.logger.error(' Error in update comment', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error(' Error in update comment', err);
+            throw err;
         }
     }
 }

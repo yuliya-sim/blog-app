@@ -52,7 +52,7 @@ export class UserController {
     constructor(
         private readonly userService: UserService,
         private readonly jwtService: JwtService,
-    ) {}
+    ) { }
 
     @Get()
     //allows only admin to access this route who are authenticated
@@ -73,9 +73,9 @@ export class UserController {
         const paginationOptions = { limit, page };
         try {
             return await this.userService.getPaginatedUsers(paginationOptions);
-        } catch (error) {
-            this.logger.error('Failed to get users', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Failed to get users', err);
+            throw err;
         }
     }
 
@@ -92,9 +92,9 @@ export class UserController {
             }
             const createdUser = await this.userService.create(createUserDto);
             return this.jwtService.sign({ id: createdUser.id });
-        } catch (error) {
-            this.logger.error('Failed to create user', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Failed to create user', err);
+            throw err;
         }
     }
 
@@ -112,9 +112,9 @@ export class UserController {
                 throw new NotFoundException();
             }
             return user;
-        } catch (error) {
-            this.logger.error('Failed to get user', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Failed to get user', err);
+            throw err;
         }
     }
 
@@ -134,9 +134,9 @@ export class UserController {
         try {
             const updatedUser = await this.userService.update(id, updateUserDto);
             return updatedUser;
-        } catch (error) {
-            this.logger.error('Error updating user', error);
-            throw new Error(error);
+        } catch (err) {
+            this.logger.error('Error updating user', err);
+            throw err;
         }
     }
 
@@ -166,9 +166,9 @@ export class UserController {
                 throw new NotFoundException();
             }
             return user;
-        } catch (error) {
-            this.logger.error('Failed to get user', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Failed to get user', err);
+            throw err;
         }
     }
 }

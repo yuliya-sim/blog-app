@@ -1,21 +1,21 @@
+import { useState } from 'react';
 
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import axios from 'axios';
-import { useState } from 'react';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+import { validateInput } from '../api/helpers/validate-password';
+import { Login } from '../api/helpers/axios/login';
 
 const defaultTheme = createTheme();
 
@@ -31,50 +31,20 @@ export default function SignIn() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        validateInput(name, value);
+        validateInput(name, value, errors, setErrors);
         setFormData((prevData) => ({
             ...prevData,
             [name]: value,
         }));
 
     };
-
     const handleSubmit = async (e: { preventDefault: () => void; currentTarget: { checkValidity: () => any; }; }) => {
         e.preventDefault();
         if (e.currentTarget.checkValidity()) {
-            try {
-                const response = await axios.post(
-                    `${import.meta.env.VITE_BACKEND_URL}auth/login`,
-                    formData
-                );
+            Login(formData);
+        }
+    };
 
-                const { accessToken } = response.data;
-                localStorage.setItem('token', accessToken);
-                window.location.href = '/';
-            } catch (error) {
-                console.error('Sign in failed:', error);
-            }
-        }
-    };
-    const validateInput = (name: string, value: string) => {
-        let errorMessage = '';
-        if (name === 'password') {
-            if (value.length < 8) {
-                errorMessage = 'Password must be at least 8 characters long';
-            } else if (!/[a-z]/.test(value)) {
-                errorMessage = 'Password must contain at least one lowercase letter';
-            } else if (!/[A-Z]/.test(value)) {
-                errorMessage = 'Password must contain at least one uppercase letter';
-            } else if (!/\d/.test(value)) {
-                errorMessage = 'Password must contain at least one number';
-            }
-        } else {
-            if (!/\S+@\S+\.\S+/.test(value)) {
-                errorMessage = 'Please enter a valid email';
-            }
-        }
-        setErrors({ ...errors, [name]: errorMessage });
-    };
     return (
         <ThemeProvider theme={defaultTheme}>
             <Container component="main" maxWidth="xs">

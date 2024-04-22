@@ -19,14 +19,6 @@ export class BlogEntity extends BaseEntity {
   @Column({ nullable: true })
   topic: Sections;
 
-  @Column({})
-  published: boolean = false;
-
-  @Column({
-    type: Date,
-    nullable: true,
-  })
-  publish_at: Date | null;
 
   @ManyToOne(() => UserEntity, (user) => user.blogs)
   author: UserEntity;

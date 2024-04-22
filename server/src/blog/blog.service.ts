@@ -41,9 +41,9 @@ export class BlogService {
                 results: blogsWithoutAuthor,
                 total,
             });
-        } catch (error) {
-            this.logger.error('Error in getPaginatedBlogs service', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Error in getPaginatedBlogs service', err);
+            throw err;
         }
     }
 
@@ -55,9 +55,9 @@ export class BlogService {
             }
 
             return await this.blogRepository.save(this.blogRepository.create({ ...blog, author: { id: userId } }));
-        } catch (error) {
-            this.logger.error('Error in create service', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Error in create service', err);
+            throw err;
         }
     }
 
@@ -68,9 +68,9 @@ export class BlogService {
                     slug,
                 },
             });
-        } catch (error) {
-            this.logger.error('Error in findBySlug service', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Error in findBySlug service', err);
+            throw err;
         }
     }
 
@@ -88,9 +88,9 @@ export class BlogService {
             if (!existingBlogs.length) {
                 return updatedDTO;
             }
-        } catch (error) {
-            this.logger.error('Error in ensureUniqueSlug service', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Error in ensureUniqueSlug service', err);
+            throw err;
         }
     }
 
@@ -111,9 +111,9 @@ export class BlogService {
                 .createQueryBuilder('blog')
                 .where('slug like :slug', { slug: `${slug}%` })
                 .getMany();
-        } catch (error) {
-            this.logger.error('Error in findSlugs service', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Error in findSlugs service', err);
+            throw err;
         }
     }
 
@@ -124,9 +124,9 @@ export class BlogService {
                 throw new NotFoundException(`Blog with id ${id} not found`);
             }
             return blog;
-        } catch (error) {
-            this.logger.error('Error in findById service', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Error in findById service', err);
+            throw err;
         }
     }
 
@@ -149,7 +149,7 @@ export class BlogService {
             return blog;
         } catch (err) {
             this.logger.error('Error in update service', err);
-            throw new Error();
+            throw err;
         }
     }
 
@@ -171,7 +171,7 @@ export class BlogService {
             return 'Blog deleted successfully';
         } catch (err) {
             this.logger.error('Error in remove service', err);
-            throw new Error();
+            throw err;
         }
     }
 }

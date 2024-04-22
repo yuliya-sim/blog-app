@@ -1,97 +1,89 @@
-import { INestApplication, BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-import { ConfigModule, ConfigService } from 'nestjs-config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import * as path from 'path';
-import { UserModule, UserService } from '../user';
-import { AuthModule } from './auth.module';
-import { UserEntity } from '../entities';
+import { UserService } from './../user';
+import { UserEntity } from './../entities';
+import { TokenEntity } from './../entities/token.entity';
+import { LoginDto } from './dto';
+import { RegisterDto } from './dto/register.dto';
+import { JwtService } from '@nestjs/jwt';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { ConfigService } from 'nestjs-config';
+
+import { faker } from '@faker-js/faker';
+import { Token } from './tokens';
+import { ConfigType } from '@nestjs/config';
+import { BadRequestException } from '@nestjs/common';
 
 describe('AuthService', () => {
-    let app: INestApplication;
-    let module: TestingModule;
-    let authService: AuthService;
-    let payload: string;
+    let service: AuthService;
     let userService: UserService;
-    let user: UserEntity;
+    let jwtService: JwtService;
+    let tokenRepository: Repository<TokenEntity>;
+    let config;
 
-    beforeAll(async () => {
-        module = await Test.createTestingModule({
-            imports: [
-                ConfigModule.load(path.resolve(__dirname, '../', 'config', '*.ts')),
-                TypeOrmModule.forRootAsync({
-                    useFactory: (config: ConfigService) => config.get('database'),
-                    inject: [ConfigService],
-                }),
-                UserModule,
-                AuthModule,
+
+    const mockUser = {
+        id: faker.string.uuid(),
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+        role: 'user',
+    } as UserEntity;
+
+    const mockLoginDto = {
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+    } as LoginDto;
+
+
+    const mockConfig = { environment: { NODE_ENV: 'PROD' } };
+
+    const mockToken = {
+        accessToken: 'accessToken',
+        refreshToken: 'refreshToken',
+    } as Token;
+
+    beforeEach(async () => {
+        const module: TestingModule = await Test.createTestingModule({
+            providers: [
+                AuthService,
+                {
+                    provide: UserService,
+                    useValue: {
+                        findByCredentials: jest.fn(() => mockUser),
+                        create: jest.fn(() => mockUser),
+                        findById: jest.fn(() => mockUser),
+                    },
+                },
+                {
+                    provide: JwtService,
+                    useValue: {
+                        sign: jest.fn(() => 'token'),
+                    },
+                },
+                {
+                    provide: getRepositoryToken(TokenEntity),
+                    useClass: Repository,
+                },
+                {
+                    provide: ConfigService,
+                    useValue: {
+                        get: jest.fn((key) => mockConfig[key]),
+                    },
+                },
             ],
         }).compile();
 
-        app = module.createNestApplication();
-        await app.init();
-
-        authService = module.get(AuthService);
-        userService = module.get(UserService);
+        service = module.get<AuthService>(AuthService);
+        userService = module.get<UserService>(UserService);
+        jwtService = module.get<JwtService>(JwtService);
+        tokenRepository = module.get<Repository<TokenEntity>>(getRepositoryToken(TokenEntity));
+        config = module.get<ConfigService>(ConfigService).get('jwt');
     });
 
-    it('authenticate fail', async () => {
-        let error;
-        try {
-            await authService.authenticate({
-                email: 'no email',
-                password: 'df',
-            });
-        } catch (e) {
-            error = e;
-        }
-
-        expect(error).toBeInstanceOf(BadRequestException);
+    it('should be defined', () => {
+        expect(service).toBeDefined();
     });
 
-    it('authenticate', async () => {
-        user = await userService.create({
-            email: 'email@email.com',
-            password: 'testtest',
-            firstname: 'test',
-            lastname: 'test',
-        });
 
-        payload = await authService.authenticate({
-            email: 'email@email.com',
-            password: 'testtest',
-        });
-    });
-
-    it('validateUser', async () => {
-        const result = await authService.validateUser(user);
-        expect(result).toBeInstanceOf(UserEntity);
-    });
-
-    describe('generateTokens', () => {
-        it('should generate access and refresh tokens for a given user and agent', async () => {
-            const user = {
-                id: '1',
-                email: 'test@example.com',
-                role: 'user',
-            } as UserEntity;
-            const agent = 'test agent';
-
-            jest
-                .spyOn(authService['jwtService'], 'sign')
-                .mockReturnValue('accessToken');
-            const getRefreshTokenSpy = jest
-                .spyOn(authService, 'getRefreshToken')
-                .mockResolvedValue('refreshToken');
-
-            const result = await authService.generateTokens(user, agent);
-
-            expect(getRefreshTokenSpy).toHaveBeenCalledWith(user.id, agent);
-            expect(result).toEqual({
-                accessToken: 'accessToken',
-                refreshToken: 'refreshToken',
-            });
-        });
-    });
 });

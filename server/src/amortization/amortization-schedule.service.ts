@@ -32,7 +32,7 @@ export class AmortizationScheduleService {
             await this.entityManager.query(queryCreateTemporaryTable);
         } catch (err) {
             this.logger.error('Error in createTemporaryTable', err);
-            throw new Error();
+            throw err;
         }
     }
     async generateAmortizationSchedule(): Promise<void> {
@@ -42,7 +42,7 @@ export class AmortizationScheduleService {
              `);
         } catch (err) {
             this.logger.error('Error in generateAmortizationSchedule', err);
-            throw new Error();
+            throw err;
         }
     }
     async callAmortizationSchedule(createScheduleDto: CreateScheduleDto): Promise<CreateScheduleDto> {
@@ -55,7 +55,7 @@ export class AmortizationScheduleService {
             `);
         } catch (err) {
             this.logger.error('Error in callAmortizationSchedule', err);
-            throw new Error();
+            throw err;
         }
     }
 }

@@ -39,9 +39,9 @@ export class AuthController {
     async login(@Body() dto: LoginDto, @Res() res: Response, @UserAgent() agent: string): Promise<void> {
         try {
             return await this.authService.login(dto, agent, res);
-        } catch (error) {
-            this.logger.error('Failed to login user.', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Failed to login user.', err);
+            throw err;
         }
     }
 
@@ -56,9 +56,9 @@ export class AuthController {
     ) {
         try {
             await this.authService.refreshTokens(refreshToken.token, agent, res);
-        } catch (error) {
-            this.logger.error('Failed to refresh tokens', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Failed to refresh tokens', err);
+            throw err;
         }
     }
 
@@ -69,9 +69,9 @@ export class AuthController {
     async logout(@Cookie(REFRESH_TOKEN) refreshToken: TokenEntity, @Res() res: Response) {
         try {
             await this.authService.deleteRefreshToken(refreshToken, res);
-        } catch (error) {
-            this.logger.error('Failed to logout user', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Failed to logout user', err);
+            throw err;
         }
     }
 }

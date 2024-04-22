@@ -34,9 +34,9 @@ export class AuthService {
     async validateUser(payload: JwtPayload): Promise<UserEntity | null> {
         try {
             return await this.userService.findById(payload.id);
-        } catch (error) {
-            this.logger.error(`Error validating user ${payload.id}`, error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error(`Error validating user ${payload.id}`, err);
+            throw err;
         }
     }
 
@@ -50,9 +50,9 @@ export class AuthService {
             const createdUser = await this.userService.create(user);
             const payload = { id: createdUser.id };
             return await this.jwtService.signAsync(payload);
-        } catch (error) {
-            this.logger.error('Error during user registration', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Error during user registration', err);
+            throw err;
         }
     }
 
@@ -69,9 +69,9 @@ export class AuthService {
                 throw new BadRequestException('Invalid credentials');
             }
             return this.setRefreshTokenToCookies(tokens, res);
-        } catch (error) {
-            this.logger.error('Error during authentication', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Error during authentication', err);
+            throw err;
         }
     }
 
@@ -98,9 +98,9 @@ export class AuthService {
 
                 return createdToken;
             }
-        } catch (error) {
-            this.logger.error('Error during getRefreshToken', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Error during getRefreshToken', err);
+            throw err;
         }
     }
 
@@ -126,9 +126,9 @@ export class AuthService {
                 throw new UnauthorizedException();
             }
             return this.setRefreshTokenToCookies(tokens, res);
-        } catch (error) {
-            this.logger.error('Error during refreshTokens', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Error during refreshTokens', err);
+            throw err;
         }
     }
 
@@ -139,9 +139,9 @@ export class AuthService {
                     token,
                 },
             });
-        } catch (error) {
-            this.logger.error('Error during findToken', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Error during findToken', err);
+            throw err;
         }
     }
 
@@ -153,10 +153,15 @@ export class AuthService {
                 roles: user.role,
             });
             const refreshToken = await this.getRefreshToken(user.id, agent);
+
+            if (!refreshToken) {
+                throw new Error('Refresh token not found');
+            }
+
             return { accessToken, refreshToken };
-        } catch (error) {
-            this.logger.error('Error during generateTokens', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Error during generateTokens', err);
+            throw err;
         }
     }
 
@@ -183,9 +188,9 @@ export class AuthService {
                 expires: new Date(),
             });
             res.sendStatus(HttpStatus.OK);
-        } catch (error) {
-            this.logger.error('Error deleting refresh token', error);
-            throw new Error();
+        } catch (err) {
+            this.logger.error('Error deleting refresh token', err);
+            throw err;
         }
     }
 
