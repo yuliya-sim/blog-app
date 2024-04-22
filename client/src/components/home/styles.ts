@@ -7,7 +7,8 @@ export const styles = theme => ({
         },
     },
     appBar: {
-        position: 'relative',
+        position: 'absolute',
+        top: 0
     },
     toolbarTitle: {
         flex: 1,

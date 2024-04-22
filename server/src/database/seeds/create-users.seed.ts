@@ -1,32 +1,33 @@
-import { UserEntity } from '../../entities/user.entity';
+import { UserEntity } from '../../entities';
 import { Factory, Seeder } from 'typeorm-seeding';
 import * as bcrypt from 'bcrypt';
 
 export class UserCreateSeed implements Seeder {
     public async run(factory: Factory, connection: any): Promise<any> {
-        const entityManager = connection.createEntityManager();
-        await entityManager.query(
-            `CREATE TABLE IF NOT EXISTS "users" ("id" SERIAL PRIMARY KEY, "create_date_time" TIMESTAMP, "last_changed_date_time" TIMESTAMP, "last_changed_by" VARCHAR, "internal_comment" VARCHAR, "email" VARCHAR, "password" VARCHAR, "first_name" VARCHAR, "last_name" VARCHAR, "role" VARCHAR)`,
-        );
-        await entityManager.insert('users', {
-            email: 'admin@example.com',
-            password: bcrypt.hashSync('Admin2024', 10),
-            firstName: 'Admin',
-            lastName: 'Example',
-            createdAt: new Date(),
-            role: 'admin',
-        });
-        for (let i = 0; i < 10; i++) {
-            const user = await factory(UserEntity)().create();
+        try {
+            const entityManager = connection.createEntityManager();
 
-            await entityManager.insert('users', {
-                email: user.email,
-                password: user.password,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                createdAt: user.createdAt,
-                role: user.role,
-            });
+            const adminEmail = 'admin@example.com';
+            const adminPassword = 'Admin2024';
+
+            const existingAdmin = await entityManager.findOne(UserEntity, { where: { email: adminEmail } });
+
+            if (!existingAdmin) {
+                const hashedPassword = await bcrypt.hash(adminPassword, 10);
+
+                const createdAdmin = await entityManager.insert(UserEntity, {
+                    email: adminEmail,
+                    password: hashedPassword,
+                    firstName: 'Admin',
+                    lastName: 'Example',
+                    createdAt: new Date(),
+                    role: 'admin',
+                });
+
+                await entityManager.save(createdAdmin);
+            }
+        } finally {
+            await connection.close();
         }
     }
 }

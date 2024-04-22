@@ -18,13 +18,12 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "typeorm-ts-node-esm",
-    "typeorm:cli": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli -f src/config/typeorm.config-migrations.ts",
-    "typeorm:migration:create": "npm run typeorm -- migration:create  migration/$npm_config_name",
-    "typeorm:migration:generate": "npx typeorm-ts-node-esm migration:generate ./src/migrations/update-post-table -d ./src/config/data-source.ts",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "migrate": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d src/config/data-source.ts  migration:run",
+    "typeorm:cli": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli -f ./src/config/typeorm.config-migrations.ts",
+    "typeorm:migration:create": "npm run typeorm -- migration:create  ./src/migration/commentInit",
     "seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js config -n src/config/typeorm.config-migrations.ts",
-    "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed -n src/config/typeorm.config-migrations.ts",
-    "db:refresh": "npm run typeorm:cli schema:drop -d  src/config/typeorm.config-migrations.ts && npm run migration:run && npm run seed:run"
+    "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed -n src/config/typeorm.config-migrations.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
