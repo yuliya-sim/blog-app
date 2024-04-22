@@ -1,6 +1,8 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from '@nestjs/typeorm';
 require('dotenv').config();
+
+
 export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
     imports: [ConfigModule],
     inject: [ConfigService],
@@ -16,8 +18,7 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
             entities: ['**/*.entity{.ts,.js}'],
             migrationsTableName: 'migration',
             migrations: ['src/migration/*.ts'],
-
-            // synchronize: true,
+            synchronize: false,
             autoLoadEntities: true,
         };
     },
@@ -30,10 +31,11 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,
     database: process.env.POSTGRES_DATABASE,
-    entities: ['**/*.entity{.ts,.js}'],
-    migrationsTableName: 'migration',
-    migrations: ['src/migration/*.ts'],
-
-    // synchronize: true,
-    autoLoadEntities: true,
+    entities: [__dirname + '/../**/*.entity.{js,ts}'],
+    migrations: [__dirname + '/../database/migrations/*{.ts,.js}'],
+    extra: {
+        charset: 'utf8mb4_unicode_ci',
+    },
+    synchronize: false,
+    logging: true,
 };
