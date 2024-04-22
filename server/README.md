@@ -18,6 +18,19 @@ The server application provides the following endpoints:
 The server application also uses Swagger to generate API documentation.
 You can access the Swagger UI at `http://localhost:8081/api`.
 
+## Creating Admin User
+
+You can create an admin user by running the seed script. The script
+creates an admin user with the email `admin@example.com` and password
+`Admin2024` if the user does not exist. The script is located in
+`src/database/seeds/create-users.seed.ts`. Run the script using the
+following command:
+
+```bash
+$ "seed:run"
+```
+
+
 ## Installation
 
 ```bash
